@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  ods-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    image: ods-image:dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data        # Monta carpeta data para persistencia
+      - ./:/app                 # Monta todo el código para hot-reload
+    environment:
+      - PYTHONUNBUFFERED=1
