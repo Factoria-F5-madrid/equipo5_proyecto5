@@ -457,7 +457,7 @@ def create_streamlit_auto_replacement_dashboard():
         max_value=0.20,
         value=auto_replacement.performance_threshold,
         step=0.01,
-        format="%.1%"
+        format="%.1f"
     )
     
     if new_threshold != auto_replacement.performance_threshold:
