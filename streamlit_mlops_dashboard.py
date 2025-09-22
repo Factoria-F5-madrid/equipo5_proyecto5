@@ -1,4 +1,4 @@
-"""
+ cam"""
 Streamlit MLOps Dashboard
 Integrates Data Drift Monitoring and Auto Model Replacement
 """
@@ -236,7 +236,7 @@ def show_ab_testing_page():
     col1, col2 = st.columns(2)
     
     with col1:
-        traffic_split = st.slider("Traffic Split", 0.1, 0.9, 0.5, 0.1, format="%.1%")
+        traffic_split = st.slider("Traffic Split", 0.1, 0.9, 0.5, 0.1, format="%.1f")
         duration_days = st.number_input("Test Duration (days)", 1, 30, 7)
     
     with col2:
@@ -272,9 +272,9 @@ def show_ab_testing_page():
             improvement = analysis['improvement']
             
             if winner == 'A':
-                st.success(f"🏆 Winner: Model A (Random Forest) - {improvement:.2%} better")
+                st.success(f"🏆 Winner: Model A (Random Forest) - {improvement:.2f}% better")
             else:
-                st.success(f"🏆 Winner: Model B (Gradient Boosting) - {improvement:.2%} better")
+                st.success(f"🏆 Winner: Model B (Gradient Boosting) - {improvement:.2f}% better")
             
             # Recommendation
             st.info(f"💡 Recommendation: {analysis['recommendation']}")
