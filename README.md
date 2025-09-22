@@ -1,5 +1,4 @@
-# 📊 Proyecto: Predicción de Esperanza de Vida
-
+![Portada EDA](https://drive.google.com/uc?export=view&id=1kkxRMWHfNrVrHebpBDSEFEqxEGpp7GnV)
 
 ## Descripción
 Este proyecto busca predecir la esperanza de vida a partir de un conjunto de datos obtenido en Kaggle.
@@ -27,6 +26,25 @@ Se exploran relaciones entre factores socioeconómicos, sanitarios y demográfic
 ├── requirements.txt        # Dependencias del proyecto
 └── README.md              # Este archivo
 ```
+---
+## 🌳 Estructura del Proyecto  
+
+El desarrollo se organiza en ramas según funcionalidades y etapas:  
+
+- **development** → Rama base para integración de funcionalidades.  
+- **data-colect** → Scripts y notebooks relacionados con la recolección y preparación de datos.  
+- **feature/eda-visualizacion** → Exploración de datos y generación de gráficas para el análisis inicial.    
+- **feature/model** → Creación y ajuste de modelos de Machine Learning.  
+- **feat/model-backend** → Integración del modelo en el backend (API, endpoints).  
+- **docker-image** → Configuración de contenedores Docker para despliegue.  
+- **feature/test** → Pruebas y validación del sistema.  
+  
+
+### Flujo de trabajo utilizado
+1. Cada integrante desarrolla en su rama.   
+2. Al completar una funcionalidad, se hace **pull request** hacia `development`.  
+3. `development` sirve como rama central de integración y pruebas conjuntas.  
+4. Una vez validado, se puede preparar una rama `main` o `release` para entrega final.  
 ---
 
 ## Dataset  
