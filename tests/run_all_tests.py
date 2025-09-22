@@ -16,6 +16,7 @@ from test_pipeline import TestLifeExpectancyPipeline, TestPipelineIntegration
 from test_model import (TestModelLoading, TestModelPerformance, 
                        TestFeatureImportance, TestDataConsistency)
 from test_data_validation import TestDataValidation, TestDataQuality
+from test_ab_testing import TestABTestingSystem, TestABTestingIntegration
 
 
 def run_all_tests():
@@ -43,7 +44,11 @@ def run_all_tests():
         
         # Data validation tests
         TestDataValidation,
-        TestDataQuality
+        TestDataQuality,
+        
+        # A/B Testing tests
+        TestABTestingSystem,
+        TestABTestingIntegration
     ]
     
     # Add all test classes to suite
@@ -86,6 +91,7 @@ def run_all_tests():
     print(f"   🔧 Pipeline Tests: {len([t for t in test_classes[:2]])} classes")
     print(f"   🤖 Model Tests: {len([t for t in test_classes[2:6]])} classes")
     print(f"   ✅ Validation Tests: {len([t for t in test_classes[6:8]])} classes")
+    print(f"   🧪 A/B Testing Tests: {len([t for t in test_classes[8:10]])} classes")
     
     # Detailed failure/error reporting
     if failures > 0:
