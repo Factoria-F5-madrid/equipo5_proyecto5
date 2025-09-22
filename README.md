@@ -1,15 +1,17 @@
-# Proyecto de Regresión - Esperanza de Vida
+# 📊 Proyecto: Predicción de Esperanza de Vida
 
-## 📋 Descripción del Proyecto
-Proyecto de machine learning para predecir la esperanza de vida utilizando técnicas de regresión. Este proyecto forma parte del bootcamp de IA.
 
-## 🎯 Objetivos
+## Descripción
+Este proyecto busca predecir la esperanza de vida a partir de un conjunto de datos obtenido en Kaggle.
+Se exploran relaciones entre factores socioeconómicos, sanitarios y demográficos, aplicando Machine Learning para construir un modelo de regresión que permita entender e inferir la variable objetivo.
+
+## Objetivos
 - Desarrollar un modelo de regresión para predecir la esperanza de vida
 - Realizar análisis exploratorio de datos (EDA) completo
 - Implementar técnicas de optimización de hiperparámetros
 - Crear una aplicación web para productivizar el modelo
 
-## 🛠️ Tecnologías Utilizadas
+## Tecnologías Utilizadas
 - **Análisis de datos**: Pandas, NumPy
 - **Machine Learning**: Scikit-learn, XGBoost, LightGBM
 - **Optimización**: Optuna
@@ -25,8 +27,69 @@ Proyecto de machine learning para predecir la esperanza de vida utilizando técn
 ├── requirements.txt        # Dependencias del proyecto
 └── README.md              # Este archivo
 ```
+---
 
-## 🚀 Instalación y Uso
+## Dataset  
+- **Fuente:** [Kaggle - Life Expectancy (WHO)](https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who)  
+- **Observaciones:** 2938 filas, 22 columnas.  
+- **Variable objetivo:** `Life expectancy` (años).  
+- **Principales features:**  
+  - Salud: *Adult Mortality, infant deaths, HIV/AIDS, Hepatitis B, Measles, BMI, Polio, Diphtheria, thinness, under-five deaths*  
+  - Socioeconómicas: *GDP, Population, Income composition of resources, Schooling*  
+  - Otros: *Alcohol, percentage expenditure, Total expenditure, Status (Developed/Developing)*  
+
+---
+## 🔍 Exploración inicial de los datos (EDA preliminar)  
+- **Valores nulos:** varias columnas presentan missing values (ej. *GDP, Population, Hepatitis B, BMI*).  
+- **Tipos de variables:**  
+  - Categóricas → `Country`, `Status`  
+  - Numéricas → 20 variables (años, porcentajes, tasas, PIB, etc.).  
+- **Estadísticas básicas:**  
+  - `Life expectancy` varía aprox. entre **36 y 90 años**, con media cercana a **70 años**.  
+  - Alta correlación positiva con `Schooling` e `Income composition of resources`.  
+  - Alta correlación negativa con `Adult Mortality` y `HIV/AIDS`.  
+
+---
+
+## Metodología  
+1. **Análisis Exploratorio de Datos (EDA):**  
+   - Distribución de variables.  
+   - Correlaciones y gráficos explicativos.  
+   - Identificación de outliers y datos faltantes.  
+
+2. **Preprocesamiento:**  
+   - Limpieza de valores nulos.  
+   - Codificación de variables categóricas (`Status`).  
+   - Estandarización/normalización de variables.  
+   - Selección de features.  
+
+3. **Entrenamiento del Modelo:**  
+   - Modelos base: regresión lineal y regularizada.  
+   - Modelos ensemble: Random Forest, XGBoost, Gradient Boosting.  
+   - Validación cruzada (K-Fold).  
+
+4. **Optimización:**  
+   - Ajuste de hiperparámetros (Optuna, GridSearch, RandomSearch).
+     
+5. **Evaluación:**  
+   - Métricas: RMSE, MAE, R².  
+   - Visualización de residuos.  
+   - Feature importance.  
+
+6. **Productivización:**  
+   - Aplicación web interactiva (Streamlit/Gradio).  
+   - Posible despliegue en la nube (AWS/GCP/Azure/Render).  
+
+---
+
+## 📸 Evidencias  
+- Captura del score obtenido en Kaggle.  
+- Posición en el leaderboard.  
+
+---
+
+
+## Instalación y Uso
 
 ### 1. Crear entorno virtual
 ```bash
@@ -44,35 +107,23 @@ pip install -r requirements.txt
 jupyter notebook
 ```
 
-## 📊 Niveles de Entrega
+---
 
-### 🟢 Nivel Esencial
-- [ ] Modelo de ML funcional para regresión
-- [ ] EDA con visualizaciones relevantes
-- [ ] Overfitting < 5%
-- [ ] Aplicación web (Streamlit)
-- [ ] Informe de rendimiento con métricas
+## Competencias demostradas en este proyecto: 
+- **1:** Evaluar conjuntos de datos con análisis y visualización.  
+- **2:** Aplicar algoritmos de ML según el problema, resolviendo retos clásicos de Inteligencia Artificial.
 
-### 🟡 Nivel Medio
-- [ ] Técnicas de ensemble
-- [ ] Validación cruzada
-- [ ] Optimización de hiperparámetros
-- [ ] Sistema de feedback
-- [ ] Pipeline de ingestión de datos
+  ## Niveles de entrega  
+- **🟢 Esencial** → Modelo base + EDA + métricas + aplicación sencilla.  
+- **🟡 Medio** → Ensembles, validación cruzada, optimización, pipeline de datos.  
+- **🟠 Avanzado** → Dockerización, almacenamiento en BD, despliegue cloud, test unitarios.  
+- **🔴 Experto** → MLOps con A/B Testing, monitoreo de drift, auto-reemplazo de modelos.  
 
-### 🟠 Nivel Avanzado
-- [ ] Dockerización
-- [ ] Base de datos
-- [ ] Despliegue en la nube
-- [ ] Tests unitarios
 
-### 🔴 Nivel Experto
-- [ ] MLOps con A/B Testing
-- [ ] Monitoreo de Data Drift
-- [ ] Auto-reemplazo de modelos
 
+___
 ## 👥 Equipo
-Equipo 5 - Bootcamp IA
-
-## 📅 Fecha de Entrega
-2 semanas desde el inicio del proyecto
+- Bárbara Sánchez
+- Mónica Gómez
+- Azul Fayos
+- Maribel Gutiérrez Ramírez
