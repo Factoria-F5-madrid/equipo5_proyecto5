@@ -111,8 +111,8 @@ class LifeExpectancyPipeline:
             if variable in user_data:
                 value = user_data[variable]
                 
-                # Check if it's a number
-                if not isinstance(value, (int, float)):
+                # Check if it's a number (exclude booleans)
+                if not isinstance(value, (int, float)) or isinstance(value, bool):
                     errors.append(f"{variable}: Must be a number, received {type(value).__name__}")
                     continue
                 
