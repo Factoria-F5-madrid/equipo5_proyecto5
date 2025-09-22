@@ -1,5 +1,5 @@
 # Análisis de datos y machine learning
-numpy==2.1.1
+numpy==2.3.2
 pandas==2.2.3
 scikit-learn==1.5.2
 optuna==3.6.1
