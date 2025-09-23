@@ -1,8 +1,8 @@
-from db_utils import get_connection
+from db_connection import engine
 import json
 
 def log_drift(column_name, reference_stats, current_stats, drift_metric):
-  conn = get_connection()
+  conn = engine()
   cur = conn.cursor()
   cur.execute("""
     INSERT INTO data_drift (column_name, reference_stats, current_stats, drift_metric)
@@ -13,7 +13,7 @@ def log_drift(column_name, reference_stats, current_stats, drift_metric):
   conn.close()
 
 def get_recent_drifts(limit=10):
-  conn = get_connection()
+  conn = engine()
   cur = conn.cursor()
   cur.execute("""
     SELECT * FROM data_drift

@@ -1,8 +1,8 @@
-from db_utils import get_connection
+from db_connection import engine
 import json
 
 def create_experiment(name, description, traffic_split):
-  conn = get_connection()
+  conn = engine()
   cur = conn.cursor()
   cur.execute("""
     INSERT INTO experiments (name, description, traffic_split)
@@ -16,7 +16,7 @@ def create_experiment(name, description, traffic_split):
   return experiment_id
 
 def log_experiment_result(experiment_id, model_id, feedback_id, success, latency_ms):
-  conn = get_connection()
+  conn = engine()
   cur = conn.cursor()
   cur.execute("""
     INSERT INTO experiment_results (experiment_id, model_id, feedback_id, success, latency_ms)

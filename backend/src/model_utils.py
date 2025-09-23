@@ -1,8 +1,8 @@
-from db_utils import get_connection
+from db_connection import engine
 import json
 
 def insert_model(version, algorithm, hyperparams, metrics, status="candidate"):
-  conn = get_connection()
+  conn = engine()
   cur = conn.cursor()
   cur.execute("""
     INSERT INTO models (version, algorithm, hyperparams, metrics, status)
@@ -16,7 +16,7 @@ def insert_model(version, algorithm, hyperparams, metrics, status="candidate"):
   return model_id
 
 def get_active_model():
-  conn = get_connection()
+  conn = engine()
   cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
   cur.execute("SELECT * FROM models WHERE status='active' ORDER BY trained_at DESC LIMIT 1;")
   model = cur.fetchone()
