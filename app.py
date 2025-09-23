@@ -18,7 +18,15 @@ if pipeline.model is None or pipeline.preprocessor is None:
 st.success("✅ Modelo y preprocesador cargados correctamente.")
 
 # --- Cargar datos para sliders ---
-DATA_PATH = "/app/data/clean_data.csv"
+# Detectar si estamos en Docker o localmente
+if os.path.exists("/app/data/clean_data.csv"):
+    # Estamos en Docker
+    DATA_PATH = "/app/data/clean_data.csv"
+    FEATURE_IMPORTANCE_PATH = "/app/models/feature_importance.csv"
+else:
+    # Estamos ejecutando localmente
+    DATA_PATH = "data/clean_data.csv"
+    FEATURE_IMPORTANCE_PATH = "models/feature_importance.csv"
 
 try:
     df_clean = pd.read_csv(DATA_PATH)
@@ -28,7 +36,7 @@ except Exception as e:
 
 # --- Cargar top 5 features ---
 try:
-    feature_importance = pd.read_csv('/app/models/feature_importance.csv')
+    feature_importance = pd.read_csv(FEATURE_IMPORTANCE_PATH)
     top_features = feature_importance['feature'].head(5).tolist()
 except Exception as e:
     st.error(f"No se pudo cargar feature_importance.csv: {e}")
@@ -101,13 +109,17 @@ if st.button("Predecir Esperanza de Vida"):
                 # Realizar predicción
                 prediction = pipeline.predict(transformed)
                 
-                # Manejar tanto arrays como escalares
-                if isinstance(prediction, (list, np.ndarray)):
-                    final_prediction = prediction[0]
+                # Verificar que la predicción no sea None
+                if prediction is None:
+                    st.error("❌ Error: No se pudo hacer la predicción. Verifica que el modelo esté cargado correctamente.")
                 else:
-                    final_prediction = prediction
-                
-                st.success(f"✅ Predicción completada: **{final_prediction:.2f} años**")
+                    # Manejar tanto arrays como escalares
+                    if isinstance(prediction, (list, np.ndarray)):
+                        final_prediction = prediction[0]
+                    else:
+                        final_prediction = prediction
+                    
+                    st.success(f"✅ Predicción completada: **{final_prediction:.2f} años**")
             else:
                 st.error("❌ Falló la transformación de los datos.")
                 
