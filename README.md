@@ -1,4 +1,4 @@
-# 📊 Proyecto: Predicción de Esperanza de Vida
+![Portada](https://drive.google.com/uc?export=view&id=1kkxRMWHfNrVrHebpBDSEFEqxEGpp7GnV)
 
 
 ## Descripción
@@ -69,25 +69,21 @@ Se exploran relaciones entre factores socioeconómicos, sanitarios y demográfic
    - Validación cruzada (K-Fold).  
 
 4. **Optimización:**  
-   - Ajuste de hiperparámetros (Optuna, GridSearch, RandomSearch).
+   - Ajuste de hiperparámetros
      
 5. **Evaluación:**  
-   - Métricas: RMSE, MAE, R².  
-   - Visualización de residuos.  
-   - Feature importance.  
+    
 
 6. **Productivización:**  
-   - Aplicación web interactiva (Streamlit/Gradio).  
-   - Posible despliegue en la nube (AWS/GCP/Azure/Render).  
+   - Aplicación web interactiva en Streamlit  
+   - Despliegue de back en la nube Railway  
 
 ---
 
-## 📸 Evidencias  
-- Captura del score obtenido en Kaggle.  
-- Posición en el leaderboard.  
+## 📸 Evidencia 
+- Visualización de porcentajes del rendimiento de modelo en tiempo real en el front.  
 
 ---
-
 
 ## Instalación y Uso
 
@@ -113,7 +109,7 @@ jupyter notebook
 - **1:** Evaluar conjuntos de datos con análisis y visualización.  
 - **2:** Aplicar algoritmos de ML según el problema, resolviendo retos clásicos de Inteligencia Artificial.
 
-  ## Niveles de entrega  
+  ## Niveles alcanzados  
 - **🟢 Esencial** → Modelo base + EDA + métricas + aplicación sencilla.  
 - **🟡 Medio** → Ensembles, validación cruzada, optimización, pipeline de datos.  
 - **🟠 Avanzado** → Dockerización, almacenamiento en BD, despliegue cloud, test unitarios.  
