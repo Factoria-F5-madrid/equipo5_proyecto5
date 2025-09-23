@@ -65,7 +65,6 @@ CREATE TABLE data_drift (
 
 CREATE TABLE feedback (
   feedback_id SERIAL PRIMARY KEY,
-  user_id VARCHAR(50),
   input JSONB,
   prediction FLOAT,
   actual FLOAT,
