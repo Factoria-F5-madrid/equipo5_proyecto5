@@ -1,6 +1,0 @@
--r requirements.txt
-
-# Dev & notebooks
-jupyter
-notebook
-ipykernel

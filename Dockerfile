@@ -10,11 +10,10 @@ RUN apt-get update && \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY requirements_dev.txt .
-RUN pip install --no-cache-dir -r requirements_dev.txt
-
 COPY . .
 
 EXPOSE 8501
+
+
 
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
