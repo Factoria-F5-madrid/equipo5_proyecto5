@@ -931,15 +931,151 @@ def show_model_replacement_page():
 def show_ab_testing_page():
     """Página de pruebas A/B"""
     st.header("🧪 Pruebas A/B")
-    if MLOPS_AVAILABLE:
+    
+    # Forzar modo local para esta página
+    if False:  # Cambiado de MLOPS_AVAILABLE a False para forzar modo local
         try:
             ab_testing = ABTestingSystem()
             st.write("Sistema de pruebas A/B disponible")
         except Exception as e:
             st.error(f"Error en pruebas A/B: {e}")
     else:
-        st.info("ℹ️ Pruebas A/B no disponibles en modo local")
-        st.write("Esta funcionalidad requiere una base de datos PostgreSQL.")
+        # Modo local con simulación de A/B Testing
+        st.info("ℹ️ Modo Local - Simulación de Pruebas A/B")
+        
+        # Información sobre A/B Testing
+        st.subheader("📊 ¿Qué son las Pruebas A/B?")
+        st.write("""
+        Las pruebas A/B permiten comparar dos versiones de un modelo para determinar cuál funciona mejor.
+        Se divide el tráfico entre el modelo actual (A) y un modelo candidato (B) y se miden las métricas.
+        """)
+        
+        # Simulación de experimento A/B
+        st.subheader("🔬 Simulación de Experimento A/B")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("**Modelo A (Actual):**")
+            st.metric("RMSE", "21.6", "0.0")
+            st.metric("R² Score", "0.85", "0.0")
+            st.metric("Usuarios", "1,500", "50%")
+        
+        with col2:
+            st.write("**Modelo B (Candidato):**")
+            st.metric("RMSE", "19.8", "-1.8")
+            st.metric("R² Score", "0.87", "+0.02")
+            st.metric("Usuarios", "1,500", "50%")
+        
+        # Configuración del experimento
+        st.subheader("⚙️ Configuración del Experimento")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            duration = st.slider("Duración (días)", 1, 30, 7)
+            st.write(f"**Duración:** {duration} días")
+        
+        with col2:
+            traffic_split = st.slider("División de Tráfico", 10, 90, 50)
+            st.write(f"**División:** {traffic_split}% / {100-traffic_split}%")
+        
+        with col3:
+            confidence_level = st.slider("Nivel de Confianza", 90, 99, 95)
+            st.write(f"**Confianza:** {confidence_level}%")
+        
+        # Resultados del experimento
+        st.subheader("📈 Resultados del Experimento")
+        
+        if st.button("🚀 Ejecutar Prueba A/B", type="primary"):
+            st.success("✅ Experimento completado")
+            
+            # Simular resultados
+            st.write("**Análisis Estadístico:**")
+            
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                st.metric("Diferencia RMSE", "-1.8", "8.3% mejora")
+                st.metric("Significancia", "SÍ", "p < 0.05")
+            
+            with col2:
+                st.metric("Diferencia R²", "+0.02", "2.4% mejora")
+                st.metric("Potencia", "85%", "Alta")
+            
+            with col3:
+                st.metric("Tamaño Muestra", "3,000", "Suficiente")
+                st.metric("Recomendación", "Implementar B", "✅")
+            
+            # Gráfico de resultados
+            st.write("**Evolución de Métricas:**")
+            
+            # Simular datos temporales
+            days = list(range(1, duration + 1))
+            model_a_rmse = [21.6 + np.random.normal(0, 0.5) for _ in days]
+            model_b_rmse = [19.8 + np.random.normal(0, 0.3) for _ in days]
+            
+            fig = px.line(
+                x=days,
+                y=[model_a_rmse, model_b_rmse],
+                title="RMSE por Día - Modelo A vs Modelo B",
+                labels={'x': 'Día', 'y': 'RMSE'},
+                color_discrete_sequence=['red', 'blue']
+            )
+            fig.update_layout(
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=1.02,
+                    xanchor="right",
+                    x=1
+                )
+            )
+            fig.add_annotation(
+                text="Modelo A (Actual)",
+                x=days[-1], y=model_a_rmse[-1],
+                showarrow=True,
+                arrowhead=2,
+                arrowcolor="red"
+            )
+            fig.add_annotation(
+                text="Modelo B (Candidato)",
+                x=days[-1], y=model_b_rmse[-1],
+                showarrow=True,
+                arrowhead=2,
+                arrowcolor="blue"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Recomendación final
+            st.subheader("🎯 Recomendación Final")
+            
+            if st.button("✅ Implementar Modelo B", type="primary"):
+                st.success("🎉 Modelo B implementado exitosamente!")
+                st.write("**Próximos pasos:**")
+                st.write("- Monitorear rendimiento en producción")
+                st.write("- Configurar alertas de degradación")
+                st.write("- Planificar siguiente experimento")
+        
+        # Información adicional
+        st.subheader("ℹ️ Información sobre A/B Testing")
+        st.info("""
+        **¿Cuándo usar A/B Testing?**
+        
+        - **Nuevos modelos**: Antes de reemplazar completamente
+        - **Cambios graduales**: Implementación progresiva
+        - **Validación**: Confirmar mejoras en datos reales
+        - **Reducción de riesgo**: Evitar cambios drásticos
+        
+        **Criterios de éxito:**
+        - **Significancia estadística**: p < 0.05
+        - **Mejora práctica**: Diferencia relevante
+        - **Estabilidad**: Resultados consistentes
+        - **Tamaño de muestra**: Suficiente para detectar diferencias
+        
+        **Modo Local:** Esta simulación muestra cómo funcionaría el sistema 
+        con datos reales y una base de datos PostgreSQL.
+        """)
 
 # --- Main ---
 def main():
