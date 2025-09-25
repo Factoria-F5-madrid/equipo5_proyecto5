@@ -1,3 +1,8 @@
+# requirements.txt (producción)
+joblib>=1.4,<1.5
+scipy>=1.15.2
+streamlit>=1.39,<1.40
+
 # Análisis de datos y machine learning
 numpy==2.1.1
 pandas==2.2.3
