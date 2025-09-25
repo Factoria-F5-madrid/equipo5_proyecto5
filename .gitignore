@@ -1,6 +1,6 @@
 # Datos
 data/
-*.csv
+!data/clean_data.csv
 *.json
 *.parquet
 
