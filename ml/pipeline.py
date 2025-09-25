@@ -87,18 +87,36 @@ class LifeExpectancyPipeline:
         print("Preprocessor and model created and saved successfully.")
 
     def transform_data(self, user_data):
-        if self.preprocessor is None:
-            print("Preprocessor not found. Creating from default data...")
-            self.create_preprocessor_and_model()
-        df = pd.DataFrame([user_data])
-        return self.preprocessor.transform(df)
+        try:
+            if self.preprocessor is None:
+                print("Preprocessor not found. Creating from default data...")
+                self.create_preprocessor_and_model()
+            df = pd.DataFrame([user_data])
+            return self.preprocessor.transform(df)
+        except AttributeError as e:
+            if "monotonic_cst" in str(e):
+                print("Preprocessor compatibility issue detected. Retraining...")
+                self.create_preprocessor_and_model()
+                df = pd.DataFrame([user_data])
+                return self.preprocessor.transform(df)
+            else:
+                raise e
 
     def predict(self, user_data):
-        transformed = self.transform_data(user_data)
-        if self.model is None:
-            print("Model not found. Creating new one...")
-            self.create_preprocessor_and_model()
-        return round(self.model.predict(transformed)[0], 2)
+        try:
+            transformed = self.transform_data(user_data)
+            if self.model is None:
+                print("Model not found. Creating new one...")
+                self.create_preprocessor_and_model()
+            return round(self.model.predict(transformed)[0], 2)
+        except AttributeError as e:
+            if "monotonic_cst" in str(e):
+                print("Model compatibility issue detected. Retraining model...")
+                self.create_preprocessor_and_model()
+                transformed = self.transform_data(user_data)
+                return round(self.model.predict(transformed)[0], 2)
+            else:
+                raise e
 
 # Test rápido
 if __name__ == "__main__":

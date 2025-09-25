@@ -116,7 +116,7 @@ st.sidebar.markdown("---")
 # Navegación principal
 page = st.sidebar.selectbox(
     "📊 Navegación Principal",
-    ["🏠 Dashboard", "📈 Análisis de Datos", "🔍 Monitoreo de Deriva", 
+    ["🏠 Dashboard", "🔮 Predictor de Esperanza de Vida", "📈 Análisis de Datos", "🔍 Monitoreo de Deriva", 
      "🔄 Reemplazo de Modelos", "🧪 Pruebas A/B", "📊 Rendimiento del Modelo"]
 )
 
@@ -211,6 +211,226 @@ def show_dashboard_page():
                 labels={'x': 'Coeficiente de Correlación', 'y': 'Variable'})
     fig.update_layout(yaxis={'categoryorder': 'total ascending'})
     st.plotly_chart(fig, use_container_width=True)
+
+def show_predictor_page():
+    """Página del predictor de esperanza de vida"""
+    st.header("🔮 Predictor de Esperanza de Vida")
+    
+    st.info("""
+    **🔮 Predictor Interactivo de Esperanza de Vida**
+    
+    Ingresa los parámetros de un país para predecir su esperanza de vida.
+    El modelo utiliza 18 características socioeconómicas y de salud.
+    """)
+    
+    # Crear formulario de entrada
+    with st.form("predictor_form"):
+        st.subheader("📊 Parámetros de Entrada")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Información básica
+            countries = df_clean['country'].unique()
+            country = st.selectbox("🌍 País", countries, help="Selecciona un país del dataset")
+            year = st.slider("📅 Año", min_value=2000, max_value=2030, value=2024, help="Año de la predicción")
+            status = st.selectbox("🏛️ Estado de Desarrollo", ["Developed", "Developing"], help="Estado de desarrollo del país")
+            
+            # Parámetros de salud
+            adult_mortality = st.slider("💀 Mortalidad Adulta (por 1000)", min_value=0.0, max_value=1000.0, value=50.0, step=1.0, help="Mortalidad de adultos entre 15-60 años")
+            infant_deaths = st.slider("👶 Muertes Infantiles", min_value=0, max_value=10000, value=5, step=1, help="Número de muertes infantiles")
+            under_five_deaths = st.slider("👶👶 Muertes <5 años", min_value=0, max_value=10000, value=8, step=1, help="Número de muertes de niños menores de 5 años")
+            
+            # Parámetros de salud específicos
+            hepatitis_b = st.slider("🦠 Hepatitis B (%)", min_value=0.0, max_value=100.0, value=85.0, step=0.1, help="Porcentaje de vacunación contra Hepatitis B")
+            measles = st.slider("🌡️ Sarampión (por 1000)", min_value=0, max_value=10000, value=50, step=1, help="Número de casos de sarampión por 1000 habitantes")
+            polio = st.slider("🦵 Polio (%)", min_value=0.0, max_value=100.0, value=90.0, step=0.1, help="Porcentaje de vacunación contra polio")
+            diphtheria = st.slider("🦠 Difteria (%)", min_value=0.0, max_value=100.0, value=88.0, step=0.1, help="Porcentaje de vacunación contra difteria")
+            hiv_aids = st.slider("🩸 VIH/SIDA (%)", min_value=0.0, max_value=50.0, value=0.1, step=0.01, help="Porcentaje de población con VIH/SIDA")
+        
+        with col2:
+            # Parámetros económicos
+            gdp = st.slider("💰 PIB per cápita", min_value=0.0, max_value=100000.0, value=30000.0, step=100.0, help="PIB per cápita en USD")
+            population = st.slider("👥 Población", min_value=0.0, max_value=2000000000.0, value=47000000.0, step=100000.0, help="Población total del país")
+            income_composition = st.slider("📈 Composición de Ingresos", min_value=0.0, max_value=1.0, value=0.8, step=0.01, help="Índice de composición de recursos de ingresos")
+            
+            # Parámetros de gasto
+            percentage_expenditure = st.slider("💸 % Gasto en Salud", min_value=0.0, max_value=50.0, value=8.0, step=0.1, help="Porcentaje del PIB gastado en salud")
+            total_expenditure = st.slider("🏥 Gasto Total en Salud", min_value=0.0, max_value=50.0, value=7.5, step=0.1, help="Porcentaje del gasto total en salud")
+            
+            # Parámetros de estilo de vida
+            alcohol = st.slider("🍷 Consumo de Alcohol", min_value=0.0, max_value=20.0, value=8.0, step=0.1, help="Consumo de alcohol per cápita en litros")
+            bmi = st.slider("⚖️ IMC Promedio", min_value=10.0, max_value=50.0, value=25.0, step=0.1, help="Índice de masa corporal promedio")
+            
+            # Parámetros de nutrición
+            thinness_1_19 = st.slider("👶 Delgadez 1-19 años (%)", min_value=0.0, max_value=50.0, value=2.0, step=0.1, help="Prevalencia de delgadez en niños 1-19 años")
+            thinness_5_9 = st.slider("👶 Delgadez 5-9 años (%)", min_value=0.0, max_value=50.0, value=1.5, step=0.1, help="Prevalencia de delgadez en niños 5-9 años")
+            
+            # Educación
+            schooling = st.slider("🎓 Años de Escolaridad", min_value=0.0, max_value=20.0, value=12.0, step=0.1, help="Años promedio de escolaridad")
+        
+        # Botón de predicción
+        submitted = st.form_submit_button("🔮 Predecir Esperanza de Vida", type="primary")
+        
+        if submitted:
+            # Crear DataFrame con los datos de entrada
+            input_data = {
+                'country': country,
+                'year': year,
+                'status': status,
+                'adult_mortality': adult_mortality,
+                'infant_deaths': infant_deaths,
+                'alcohol': alcohol,
+                'percentage_expenditure': percentage_expenditure,
+                'hepatitis_b': hepatitis_b,
+                'measles': measles,
+                'bmi': bmi,
+                'under_five_deaths': under_five_deaths,
+                'polio': polio,
+                'total_expenditure': total_expenditure,
+                'diphtheria': diphtheria,
+                'hiv/aids': hiv_aids,
+                'gdp': gdp,
+                'population': population,
+                'thinness__1_19_years': thinness_1_19,
+                'thinness_5_9_years': thinness_5_9,
+                'income_composition_of_resources': income_composition,
+                'schooling': schooling
+            }
+            
+            try:
+                # Hacer predicción
+                with st.spinner("🔮 Calculando predicción..."):
+                    # El pipeline espera un diccionario, no un DataFrame
+                    prediction = pipeline.predict(input_data)
+                    # Guardar en variables globales para usar fuera del formulario
+                    st.session_state.prediction_result = prediction
+                    st.session_state.input_data = input_data
+                    st.session_state.country = country
+                    st.session_state.year = year
+                
+                # Mostrar resultado
+                st.success("✅ Predicción completada exitosamente!")
+                
+                # Métricas principales
+                col1, col2, col3 = st.columns(3)
+                
+                with col1:
+                    st.metric(
+                        "🔮 Esperanza de Vida Predicha", 
+                        f"{prediction:.1f} años",
+                        help="Predicción del modelo de machine learning"
+                    )
+                
+                with col2:
+                    # Calcular percentil basado en datos históricos
+                    percentile = (prediction - df_clean['life_expectancy'].min()) / (df_clean['life_expectancy'].max() - df_clean['life_expectancy'].min()) * 100
+                    st.metric(
+                        "📊 Percentil Mundial", 
+                        f"{percentile:.1f}%",
+                        help="Posición respecto a todos los países en el dataset"
+                    )
+                
+                with col3:
+                    # Comparar con promedio mundial
+                    world_avg = df_clean['life_expectancy'].mean()
+                    difference = prediction - world_avg
+                    st.metric(
+                        "🌍 vs Promedio Mundial", 
+                        f"{difference:+.1f} años",
+                        help="Diferencia respecto al promedio mundial"
+                    )
+                
+                # Análisis detallado
+                st.subheader("📈 Análisis Detallado")
+                
+                # Comparación con países similares
+                similar_countries = df_clean[
+                    (df_clean['status'] == status) & 
+                    (abs(df_clean['gdp'] - gdp) < gdp * 0.3) &
+                    (abs(df_clean['schooling'] - schooling) < 2)
+                ]
+                
+                if len(similar_countries) > 0:
+                    similar_avg = similar_countries['life_expectancy'].mean()
+                    
+                    col1, col2 = st.columns(2)
+                    
+                    with col1:
+                        st.write("**Comparación con Países Similares:**")
+                        st.write(f"- Promedio de países similares: {similar_avg:.1f} años")
+                        st.write(f"- Tu predicción: {prediction:.1f} años")
+                        st.write(f"- Diferencia: {prediction - similar_avg:+.1f} años")
+                    
+                    with col2:
+                        # Gráfico de comparación
+                        comparison_data = pd.DataFrame({
+                            'Categoría': ['Tu Predicción', 'Promedio Mundial', 'Países Similares'],
+                            'Esperanza de Vida': [prediction, world_avg, similar_avg]
+                        })
+                        
+                        fig = px.bar(comparison_data, x='Categoría', y='Esperanza de Vida',
+                                   title="Comparación de Predicción",
+                                   color='Esperanza de Vida',
+                                   color_continuous_scale='viridis')
+                        st.plotly_chart(fig, use_container_width=True)
+                
+                # Factores más influyentes
+                st.subheader("🎯 Factores Más Influyentes")
+                
+                # Simular importancia de características (en un caso real, esto vendría del modelo)
+                feature_importance = {
+                    'Escolaridad': schooling * 0.3,
+                    'PIB per cápita': gdp * 0.00001,
+                    'Mortalidad Adulta': -adult_mortality * 0.1,
+                    'IMC': bmi * 0.2,
+                    'Gasto en Salud': percentage_expenditure * 0.5,
+                    'Vacunación': (hepatitis_b + polio + diphtheria) / 3 * 0.1
+                }
+                
+                importance_df = pd.DataFrame(list(feature_importance.items()), 
+                                           columns=['Factor', 'Influencia'])
+                importance_df = importance_df.sort_values('Influencia', ascending=True)
+                
+                fig = px.bar(importance_df, x='Influencia', y='Factor', 
+                           orientation='h', title="Influencia de Factores en la Predicción",
+                           color='Influencia', color_continuous_scale='RdYlGn')
+                st.plotly_chart(fig, use_container_width=True)
+                
+                # Recomendaciones
+                st.subheader("💡 Recomendaciones")
+                
+                recommendations = []
+                if adult_mortality > 100:
+                    recommendations.append("🔴 Reducir la mortalidad adulta mejorando el sistema de salud")
+                if schooling < 10:
+                    recommendations.append("📚 Aumentar los años de escolaridad promedio")
+                if percentage_expenditure < 5:
+                    recommendations.append("💰 Incrementar el gasto en salud como porcentaje del PIB")
+                if hepatitis_b < 80 or polio < 80 or diphtheria < 80:
+                    recommendations.append("💉 Mejorar los programas de vacunación")
+                if bmi < 18.5:
+                    recommendations.append("🍎 Mejorar la nutrición y seguridad alimentaria")
+                if bmi > 30:
+                    recommendations.append("🏃 Implementar programas de salud pública contra la obesidad")
+                
+                if recommendations:
+                    for rec in recommendations:
+                        st.write(rec)
+                else:
+                    st.success("✅ Los parámetros indican un país con buenas condiciones de salud")
+                
+            except Exception as e:
+                st.error(f"❌ Error en la predicción: {e}")
+                st.write("Por favor, verifica que todos los valores sean correctos.")
+    
+    # Botón de guardar fuera del formulario
+    if 'prediction_result' in st.session_state and 'input_data' in st.session_state:
+        st.markdown("---")
+        if st.button("💾 Guardar Predicción", key="save_prediction"):
+            save_feedback(st.session_state.input_data, st.session_state.prediction_result, 
+                         f"Predicción para {st.session_state.country} en {st.session_state.year}")
+            st.success("✅ Predicción guardada exitosamente!")
 
 def show_data_analysis_page():
     """Página de análisis de datos"""
@@ -413,7 +633,7 @@ def show_model_replacement_page():
     if not MLOPS_AVAILABLE:
         st.warning("⚠️ Módulos MLOps no disponibles en modo local")
         return
-    
+
     st.info("""
     **🔄 Sistema de Reemplazo Automático de Modelos**
     
@@ -823,7 +1043,7 @@ def show_model_performance_page():
                        name='Línea de Referencia', showlegend=False)
         
         st.plotly_chart(fig, use_container_width=True)
-    
+
     # Métricas de calidad
     st.subheader("📊 Métricas de Calidad")
     
@@ -853,6 +1073,8 @@ def show_model_performance_page():
 # --- Navegación principal ---
 if page == "🏠 Dashboard":
     show_dashboard_page()
+elif page == "🔮 Predictor de Esperanza de Vida":
+    show_predictor_page()
 elif page == "📈 Análisis de Datos":
     show_data_analysis_page()
 elif page == "🔍 Monitoreo de Deriva":
