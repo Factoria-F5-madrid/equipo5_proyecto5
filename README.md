@@ -1,125 +1,199 @@
-![Portada](https://drive.google.com/uc?export=view&id=1kkxRMWHfNrVrHebpBDSEFEqxEGpp7GnV)
+# 🧬 Life Expectancy MLOps Dashboard
 
-
-## Descripción
-Este proyecto busca predecir la esperanza de vida a partir de un conjunto de datos obtenido en Kaggle.
-Se exploran relaciones entre factores socioeconómicos, sanitarios y demográficos, aplicando Machine Learning para construir un modelo de regresión que permita entender e inferir la variable objetivo.
-
-## Objetivos
-- Desarrollar un modelo de regresión para predecir la esperanza de vida
-- Realizar análisis exploratorio de datos (EDA) completo
-- Implementar técnicas de optimización de hiperparámetros
-- Crear una aplicación web para productivizar el modelo
-
-## Tecnologías Utilizadas
-- **Análisis de datos**: Pandas, NumPy
-- **Machine Learning**: Scikit-learn, XGBoost, LightGBM
-- **Optimización**: Optuna
-- **Visualización**: Matplotlib, Seaborn, Plotly
-- **Aplicación web**: Streamlit
-- **Notebooks**: Jupyter
+Sistema completo de Machine Learning Operations (MLOps) para predicción de esperanza de vida con monitoreo de deriva de datos, reemplazo automático de modelos y pruebas A/B.
 
 ## 📁 Estructura del Proyecto
+
 ```
-├── data/                   # Datasets y archivos de datos
-├── models/                 # Modelos entrenados guardados
-├── notebooks/              # Jupyter notebooks de análisis
-├── requirements.txt        # Dependencias del proyecto
-└── README.md              # Este archivo
+equipo5_proyecto5/
+├── app.py                         # Aplicación Streamlit unificada
+├── ml/                            # Machine Learning
+│   ├── pipeline.py                # Pipeline principal
+│   ├── ml_modeling.py             # Modelado y entrenamiento
+│   ├── cleaning.py                # Limpieza de datos
+│   └── create_plots.py            # Generación de gráficos
+├── mlops/                         # MLOps y Monitoreo
+│   ├── data_drift_monitor.py      # Monitoreo de deriva
+│   ├── model_auto_replacement.py  # Reemplazo automático
+│   └── ab_testing.py              # Sistema de pruebas A/B
+├── notebooks/                     # Jupyter Notebooks
+│   ├── data_cleaning.ipynb        # Análisis y limpieza
+│   ├── eda_visualizaciones.ipynb  # EDA y visualizaciones
+│   └── ml_modeling.ipynb          # Modelado ML
+├── backend/                       # Backend y Base de Datos
+│   ├── src/                       # Código fuente backend
+│   │   ├── config.py              # Configuración
+│   │   ├── db_connect.py          # Conexión BD
+│   │   ├── data_utils.py          # Utilidades datos
+│   │   ├── model_utils.py         # Utilidades modelos
+│   │   ├── prediction_utils.py    # Utilidades predicciones
+│   │   ├── drift_utils.py         # Utilidades deriva
+│   │   ├── experiments_utils.py   # Utilidades experimentos
+│   │   └── feedback_utils.py      # Utilidades feedback
+│   └── docker_postgree/           # Docker PostgreSQL
+│       ├── docker-compose.yml     # Configuración Docker
+│       ├── init.sql               # Script inicialización BD
+│       └── Life_Expectancy_Data.csv
+├── deployment/                    # Despliegue
+│   ├── Dockerfile                 # Imagen Docker
+│   ├── docker-compose.yml         # Orquestación contenedores
+│   └── setup_database.py          # Script configuración BD
+├── config/                        # Configuración
+│   └── .streamlit/                # Configuración Streamlit
+│       └── secrets.toml.example   # Ejemplo secrets
+├── requirements.txt               # Dependencias Python
+├── docs/                          # Documentación
+│   ├── README.md                  # Este archivo
+│   ├── README_VENV.md             # Guía entorno virtual
+│   └── DEPLOYMENT.md              # Guía despliegue
+├── data/                          # Datos
+│   ├── clean_data.csv             # Datos limpios
+│   └── Life Expectancy Data.csv   # Datos originales
+├── models/                        # Modelos entrenados
+│   ├── best_life_expectancy_model.pkl
+│   ├── preprocessor.pkl
+│   ├── feature_importance.csv
+│   ├── model_results.json
+│   └── backups/                   # Respaldos modelos
+├── plots/                         # Gráficos generados
+├── tests/                         # Tests unitarios
+└── venv/                          # Entorno virtual Python
 ```
----
 
-## Dataset  
-- **Fuente:** [Kaggle - Life Expectancy (WHO)](https://www.kaggle.com/datasets/kumarajarshi/life-expectancy-who)  
-- **Observaciones:** 2938 filas, 22 columnas.  
-- **Variable objetivo:** `Life expectancy` (años).  
-- **Principales features:**  
-  - Salud: *Adult Mortality, infant deaths, HIV/AIDS, Hepatitis B, Measles, BMI, Polio, Diphtheria, thinness, under-five deaths*  
-  - Socioeconómicas: *GDP, Population, Income composition of resources, Schooling*  
-  - Otros: *Alcohol, percentage expenditure, Total expenditure, Status (Developed/Developing)*  
+## 🚀 Inicio Rápido
 
----
-## 🔍 Exploración inicial de los datos (EDA preliminar)  
-- **Valores nulos:** varias columnas presentan missing values (ej. *GDP, Population, Hepatitis B, BMI*).  
-- **Tipos de variables:**  
-  - Categóricas → `Country`, `Status`  
-  - Numéricas → 20 variables (años, porcentajes, tasas, PIB, etc.).  
-- **Estadísticas básicas:**  
-  - `Life expectancy` varía aprox. entre **36 y 90 años**, con media cercana a **70 años**.  
-  - Alta correlación positiva con `Schooling` e `Income composition of resources`.  
-  - Alta correlación negativa con `Adult Mortality` y `HIV/AIDS`.  
+### Ejecutar Aplicación
 
----
+```bash
+# Ejecutar aplicación (detecta automáticamente si hay BD disponible)
+./run_app.sh
+# o
+./run_app_local.sh  # Ambos scripts son equivalentes ahora
+```
 
-## Metodología  
-1. **Análisis Exploratorio de Datos (EDA):**  
-   - Distribución de variables.  
-   - Correlaciones y gráficos explicativos.  
-   - Identificación de outliers y datos faltantes.  
+### Opción 3: Docker
 
-2. **Preprocesamiento:**  
-   - Limpieza de valores nulos.  
-   - Codificación de variables categóricas (`Status`).  
-   - Estandarización/normalización de variables.  
-   - Selección de features.  
+```bash
+# Construir y ejecutar con Docker
+cd deployment
+docker-compose up --build
+```
 
-3. **Entrenamiento del Modelo:**  
-   - Modelos base: regresión lineal y regularizada.  
-   - Modelos ensemble: Random Forest, XGBoost, Gradient Boosting.  
-   - Validación cruzada (K-Fold).  
+## 📋 Requisitos
 
-4. **Optimización:**  
-   - Ajuste de hiperparámetros
-     
-5. **Evaluación:**  
-    
+- Python 3.11+
+- PostgreSQL (para versión con BD)
+- Docker (opcional)
 
-6. **Productivización:**  
-   - Aplicación web interactiva en Streamlit  
-   - Despliegue de back en la nube Railway  
+## 🛠️ Instalación
 
----
+1. **Clonar repositorio:**
+```bash
+git clone <repository-url>
+cd equipo5_proyecto5
+```
 
-## 📸 Evidencia 
-- Visualización de porcentajes del rendimiento de modelo en tiempo real en el front.  
-
----
-
-## Instalación y Uso
-
-### 1. Crear entorno virtual
+2. **Crear entorno virtual:**
 ```bash
 python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
+source venv/bin/activate  # Linux/Mac
+# o
+venv\Scripts\activate     # Windows
 ```
 
-### 2. Instalar dependencias
+3. **Instalar dependencias:**
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Ejecutar notebooks
+4. **Ejecutar aplicación:**
 ```bash
-jupyter notebook
+./run_app.sh
 ```
 
----
+## 🌐 Despliegue
 
-## Competencias demostradas en este proyecto: 
-- **1:** Evaluar conjuntos de datos con análisis y visualización.  
-- **2:** Aplicar algoritmos de ML según el problema, resolviendo retos clásicos de Inteligencia Artificial.
+### Streamlit Cloud
 
-  ## Niveles alcanzados  
-- **🟢 Esencial** → Modelo base + EDA + métricas + aplicación sencilla.  
-- **🟡 Medio** → Ensembles, validación cruzada, optimización, pipeline de datos.  
-- **🟠 Avanzado** → Dockerización, almacenamiento en BD, despliegue cloud, test unitarios.  
-- **🔴 Experto** → MLOps con A/B Testing, monitoreo de drift, auto-reemplazo de modelos.  
+1. Configurar secrets en Streamlit Cloud:
+```toml
+[db]
+host = "your-db-host"
+port = 5432
+name = "healthdb"
+user = "your-user"
+password = "your-password"
+```
 
+2. Conectar repositorio GitHub
+3. Configurar archivo principal: `app.py`
 
+### Base de Datos (Render/Railway)
 
-___
+Ver `docs/DEPLOYMENT.md` para instrucciones detalladas.
+
+## 🧪 Testing
+
+```bash
+# Ejecutar todos los tests
+python tests/run_all_tests.py
+
+# Tests específicos
+python -m pytest tests/test_model.py
+python -m pytest tests/test_pipeline.py
+```
+
+## 📊 Características MLOps
+
+- **Monitoreo de Deriva de Datos**: Detección automática de cambios en distribución
+- **Reemplazo Automático de Modelos**: Actualización automática cuando se detecta degradación
+- **Pruebas A/B**: Comparación de modelos en producción
+- **Monitoreo de Rendimiento**: Seguimiento continuo de métricas
+- **Feedback Loop**: Sistema de retroalimentación de usuarios
+
+## 🔧 Configuración
+
+### Variables de Entorno
+
+```bash
+# Base de datos
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=healthdb
+DB_USER=admin
+DB_PASSWORD=admin
+```
+
+### Streamlit Secrets
+
+Ver `config/.streamlit/secrets.toml.example` para configuración de secrets.
+
+## 📈 Uso
+
+1. **Dashboard Principal**: Visualización general del sistema
+2. **Análisis de Datos**: Exploración interactiva de datos
+3. **Monitoreo de Deriva**: Análisis de cambios en datos
+4. **Reemplazo de Modelos**: Gestión automática de modelos
+5. **Pruebas A/B**: Comparación de modelos
+6. **Rendimiento**: Monitoreo de métricas
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crear rama feature (`git checkout -b feature/nueva-caracteristica`)
+3. Commit cambios (`git commit -m 'Agregar nueva característica'`)
+4. Push a la rama (`git push origin feature/nueva-caracteristica`)
+5. Abrir Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
+
 ## 👥 Equipo
-- Bárbara Sánchez
-- Mónica Gómez
-- Azul Fayos
-- Maribel Gutiérrez Ramírez
+
+- **Equipo 5** - Bootcamp IA
+- **Proyecto 5** - MLOps Dashboard
+
+## 📞 Soporte
+
+Para soporte técnico o preguntas, contactar al equipo de desarrollo.

@@ -11,8 +11,8 @@ def get_db_config():
     """Obtener configuración de BD con prioridad para Streamlit"""
     try:
         import streamlit as st
-        # Si estamos en Streamlit, usar secrets
-        if hasattr(st, 'secrets') and 'db' in st.secrets:
+        # Si estamos en Streamlit, usar secrets (solo si existen)
+        if hasattr(st, 'secrets') and hasattr(st.secrets, 'get') and st.secrets.get('db'):
             return {
                 'host': st.secrets['db']['host'],
                 'port': int(st.secrets['db']['port']),
@@ -20,7 +20,8 @@ def get_db_config():
                 'user': st.secrets['db']['user'],
                 'password': st.secrets['db']['password']
             }
-    except:
+    except Exception:
+        # Ignorar errores de secrets silenciosamente
         pass
     
     # Fallback a variables de entorno
