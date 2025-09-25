@@ -6,13 +6,33 @@ import os
 from typing import Dict, Any
 
 # Configuración de base de datos
-DATABASE_CONFIG = {
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'port': int(os.getenv('DB_PORT', '5432')),
-    'database': os.getenv('DB_NAME', 'healthdb'),
-    'user': os.getenv('DB_USER', 'admin'),
-    'password': os.getenv('DB_PASSWORD', 'admin')
-}
+# Prioridad: Streamlit secrets > Environment variables > Defaults
+def get_db_config():
+    """Obtener configuración de BD con prioridad para Streamlit"""
+    try:
+        import streamlit as st
+        # Si estamos en Streamlit, usar secrets
+        if hasattr(st, 'secrets') and 'db' in st.secrets:
+            return {
+                'host': st.secrets['db']['host'],
+                'port': int(st.secrets['db']['port']),
+                'database': st.secrets['db']['name'],
+                'user': st.secrets['db']['user'],
+                'password': st.secrets['db']['password']
+            }
+    except:
+        pass
+    
+    # Fallback a variables de entorno
+    return {
+        'host': os.getenv('DB_HOST', 'localhost'),
+        'port': int(os.getenv('DB_PORT', '5432')),
+        'database': os.getenv('DB_NAME', 'healthdb'),
+        'user': os.getenv('DB_USER', 'admin'),
+        'password': os.getenv('DB_PASSWORD', 'admin')
+    }
+
+DATABASE_CONFIG = get_db_config()
 
 # URL de conexión para SQLAlchemy
 DATABASE_URL = f"postgresql://{DATABASE_CONFIG['user']}:{DATABASE_CONFIG['password']}@{DATABASE_CONFIG['host']}:{DATABASE_CONFIG['port']}/{DATABASE_CONFIG['database']}"
