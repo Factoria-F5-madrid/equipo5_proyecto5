@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_local
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: healthdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./Life_Expectancy_Data.csv:/docker-entrypoint-initdb.d/Life_Expectancy_Data.csv
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
