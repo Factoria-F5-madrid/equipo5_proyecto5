@@ -1,162 +1,209 @@
-# 🧬 Life Expectancy MLOps Dashboard
+# 🧬 Dashboard MLOps - Predicción de Esperanza de Vida
 
-Sistema completo de Machine Learning Operations (MLOps) para predicción de esperanza de vida con monitoreo de deriva de datos, reemplazo automático de modelos y pruebas A/B.
+![Predicción de la Esperanza de Vida con Machine Learning](https://via.placeholder.com/800x400/FFE5E5/000000?text=PREDICCIÓN+DE+LA+ESPERANZA+DE+VIDA+CON+MACHINE+LEARNING)
 
-## 📁 Estructura del Proyecto
+## 🌐 Aplicación Desplegada
+
+**🔗 [Ver Aplicación en Vivo](https://equipo5-proyecto5-1.onrender.com/)**
+
+## 📋 Descripción del Proyecto
+
+Este proyecto implementa un sistema completo de **Machine Learning Operations (MLOps)** para la predicción de esperanza de vida basado en indicadores socioeconómicos y de salud. La aplicación combina técnicas avanzadas de machine learning con un sistema híbrido de predicción que integra datos reales de países para generar predicciones más precisas y realistas.
+
+## 🎯 Objetivo
+
+Desarrollar un sistema MLOps robusto que prediga la esperanza de vida de países utilizando 18 características socioeconómicas y de salud, implementando las mejores prácticas de machine learning en producción.
+
+## 🏗️ Arquitectura del Sistema
 
 ```
 equipo5_proyecto5/
-├── app.py                         # Aplicación Streamlit unificada
-├── ml/                            # Machine Learning
-│   ├── pipeline.py                # Pipeline principal
+├── app.py                         # Aplicación Streamlit principal
+├── ml/                            # Módulos de Machine Learning
+│   ├── pipeline.py                # Pipeline principal de ML
+│   ├── country_data.py            # Datos reales de países
 │   ├── ml_modeling.py             # Modelado y entrenamiento
 │   ├── cleaning.py                # Limpieza de datos
-│   └── create_plots.py            # Generación de gráficos
-├── mlops/                         # MLOps y Monitoreo
-│   ├── data_drift_monitor.py      # Monitoreo de deriva
-│   ├── model_auto_replacement.py  # Reemplazo automático
+│   └── create_plots.py            # Generación de visualizaciones
+├── mlops/                         # Módulos MLOps
+│   ├── data_drift_monitor.py      # Monitoreo de deriva de datos
+│   ├── model_auto_replacement.py  # Reemplazo automático de modelos
 │   └── ab_testing.py              # Sistema de pruebas A/B
-├── notebooks/                     # Jupyter Notebooks
-│   ├── data_cleaning.ipynb        # Análisis y limpieza
-│   ├── eda_visualizaciones.ipynb  # EDA y visualizaciones
-│   └── ml_modeling.ipynb          # Modelado ML
-├── backend/                       # Backend y Base de Datos
-│   ├── src/                       # Código fuente backend
-│   │   ├── config.py              # Configuración
-│   │   ├── db_connect.py          # Conexión BD
-│   │   ├── data_utils.py          # Utilidades datos
-│   │   ├── model_utils.py         # Utilidades modelos
-│   │   ├── prediction_utils.py    # Utilidades predicciones
-│   │   ├── drift_utils.py         # Utilidades deriva
-│   │   ├── experiments_utils.py   # Utilidades experimentos
-│   │   └── feedback_utils.py      # Utilidades feedback
-│   └── docker_postgree/           # Docker PostgreSQL
-│       ├── docker-compose.yml     # Configuración Docker
-│       ├── init.sql               # Script inicialización BD
-│       └── Life_Expectancy_Data.csv
-├── deployment/                    # Despliegue
-│   ├── Dockerfile                 # Imagen Docker
-│   ├── docker-compose.yml         # Orquestación contenedores
-│   └── setup_database.py          # Script configuración BD
-├── config/                        # Configuración
-│   └── .streamlit/                # Configuración Streamlit
-│       └── secrets.toml.example   # Ejemplo secrets
-├── requirements.txt               # Dependencias Python
-├── docs/                          # Documentación
-│   ├── README.md                  # Este archivo
-│   ├── README_VENV.md             # Guía entorno virtual
-│   └── DEPLOYMENT.md              # Guía despliegue
-├── data/                          # Datos
-│   ├── clean_data.csv             # Datos limpios
-│   └── Life Expectancy Data.csv   # Datos originales
-├── models/                        # Modelos entrenados
-│   ├── best_life_expectancy_model.pkl
-│   ├── preprocessor.pkl
-│   ├── feature_importance.csv
-│   ├── model_results.json
-│   └── backups/                   # Respaldos modelos
-├── plots/                         # Gráficos generados
-├── tests/                         # Tests unitarios
-└── venv/                          # Entorno virtual Python
+├── backend/                       # Lógica de backend y base de datos
+│   ├── src/                       # Código fuente del backend
+│   │   ├── config.py              # Configuración de la aplicación
+│   │   ├── db_connect.py          # Conexión a la base de datos
+│   │   └── feedback_utils.py      # Utilidades para feedback
+│   └── docker_postgree/           # Configuración Docker para PostgreSQL
+├── data/                          # Datasets
+│   └── clean_data.csv             # Dataset limpio de esperanza de vida
+├── models/                        # Modelos entrenados y preprocesadores
+├── tests/                         # Pruebas unitarias
+├── deployment/                    # Configuración de despliegue
+└── requirements.txt               # Dependencias Python
 ```
 
-## 🚀 Inicio Rápido
+## 🚀 Características Principales
 
-### Ejecutar Aplicación
+### 🤖 Modelo de Machine Learning
+- **Algoritmo**: Gradient Boosting Regressor con 200 estimadores
+- **Preprocesamiento**: Imputación de valores faltantes y escalado estándar
+- **Validación**: Cross-validation con 5 folds
+- **Sistema Híbrido**: Combina 70% datos reales + 30% predicción ML
 
-```bash
-# Ejecutar aplicación (detecta automáticamente si hay BD disponible)
-./run_app.sh
-# o
-./run_app_local.sh  # Ambos scripts son equivalentes ahora
-```
+### 📊 Análisis Exploratorio de Datos (EDA)
+- **Visualizaciones interactivas** con Plotly
+- **Análisis de correlaciones** entre variables
+- **Distribución de la variable objetivo** (esperanza de vida)
+- **Comparación entre países desarrollados y en desarrollo**
+- **Análisis temporal** de tendencias por país
 
-### Opción 3: Docker
+### 🔧 Sistema MLOps Avanzado
 
-```bash
-# Construir y ejecutar con Docker
-cd deployment
-docker-compose up --build
-```
+#### 📈 Monitoreo de Data Drift
+- **Detección automática** de cambios en la distribución de datos
+- **Alertas en tiempo real** cuando se detecta deriva
+- **Métricas estadísticas** (KS test, PSI) para comparar distribuciones
+- **Dashboard interactivo** para visualizar el estado del modelo
 
-## 📋 Requisitos
+#### 🔄 Auto-Reemplazo de Modelos
+- **Evaluación continua** del rendimiento del modelo en producción
+- **Reentrenamiento automático** cuando el rendimiento cae
+- **Validación de métricas** antes del despliegue
+- **Rollback automático** si el nuevo modelo no mejora
 
+#### 🧪 A/B Testing
+- **Comparación de modelos** en tiempo real
+- **Métricas de rendimiento** para cada variante
+- **Análisis estadístico** de diferencias significativas
+- **Implementación automática** del mejor modelo
+
+### 💾 Gestión de Datos
+- **Base de datos PostgreSQL** para almacenamiento persistente
+- **Sistema de feedback** para recopilar datos de usuarios
+- **Pipeline de ingestión** para datos nuevos
+- **Backup automático** de modelos y datos
+
+## 🛠️ Tecnologías Utilizadas
+
+### Machine Learning
+- **scikit-learn**: Algoritmos de ML y preprocesamiento
+- **pandas & numpy**: Manipulación de datos
+- **joblib**: Serialización de modelos
+
+### Visualización y Análisis
+- **Plotly**: Visualizaciones interactivas
+- **Matplotlib & Seaborn**: Gráficos estáticos
+- **Streamlit**: Interfaz de usuario
+
+### MLOps y Producción
+- **PostgreSQL**: Base de datos relacional
+- **Docker**: Containerización
+- **Streamlit Cloud**: Despliegue en la nube
+- **SQLAlchemy**: ORM para base de datos
+
+### Testing y Calidad
+- **pytest**: Framework de testing
+- **unittest**: Pruebas unitarias
+
+## 📈 Métricas de Rendimiento
+
+### Métricas de Regresión
+- **RMSE**: Error cuadrático medio
+- **MAE**: Error absoluto medio
+- **R²**: Coeficiente de determinación
+- **Cross-validation**: Validación cruzada con 5 folds
+
+### Métricas MLOps
+- **Data Drift Score**: Medida de deriva de datos
+- **Model Performance**: Rendimiento en tiempo real
+- **A/B Test Results**: Comparación de modelos
+- **Feedback Quality**: Calidad de datos de usuario
+
+## 🎯 Niveles de Entrega Implementados
+
+### 🟢 Nivel Esencial ✅
+- ✅ **Modelo ML funcional** que predice esperanza de vida
+- ✅ **EDA completo** con visualizaciones de regresión
+- ✅ **Overfitting < 5%** mediante validación cruzada
+- ✅ **Productivización** con Streamlit
+- ✅ **Informe de rendimiento** con métricas detalladas
+
+### 🟡 Nivel Medio ✅
+- ✅ **Ensemble methods** (Gradient Boosting)
+- ✅ **Validación cruzada** (K-Fold)
+- ✅ **Optimización de hiperparámetros** con validación
+- ✅ **Sistema de feedback** para monitoreo
+- ✅ **Pipeline de ingestión** de datos nuevos
+
+### 🟠 Nivel Avanzado ✅
+- ✅ **Dockerización** completa del sistema
+- ✅ **Base de datos PostgreSQL** para persistencia
+- ✅ **Despliegue en Render** - [Ver aplicación](https://equipo5-proyecto5-1.onrender.com/)
+- ✅ **Test unitarios** para validación
+
+### 🔴 Nivel Experto ✅
+- ✅ **A/B Testing** para comparar modelos
+- ✅ **Monitoreo de Data Drift** en tiempo real
+- ✅ **Auto-reemplazo de modelos** con validación
+- ✅ **Sistema MLOps completo** con todas las funcionalidades
+
+## 🚀 Instalación y Uso
+
+### 🌐 Acceso Rápido
+**🔗 [Ver Aplicación Desplegada](https://equipo5-proyecto5-1.onrender.com/)**
+
+### Requisitos Previos
 - Python 3.11+
-- PostgreSQL (para versión con BD)
-- Docker (opcional)
+- PostgreSQL (opcional, para modo completo)
+- Docker (opcional, para containerización)
 
-## 🛠️ Instalación
-
-1. **Clonar repositorio:**
+### Instalación
 ```bash
+# Clonar el repositorio
 git clone <repository-url>
 cd equipo5_proyecto5
-```
 
-2. **Crear entorno virtual:**
-```bash
+# Crear entorno virtual
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# o
-venv\Scripts\activate     # Windows
-```
+source venv/bin/activate  # En Windows: venv\Scripts\activate
 
-3. **Instalar dependencias:**
-```bash
+# Instalar dependencias
 pip install -r requirements.txt
+
+# Ejecutar la aplicación
+streamlit run app.py
 ```
 
-4. **Ejecutar aplicación:**
+### Uso con Docker
 ```bash
-./run_app.sh
+# Construir imagen
+docker build -t life-expectancy-app .
+
+# Ejecutar contenedor
+docker run -p 8501:8501 life-expectancy-app
 ```
 
-## 🌐 Despliegue
+## 📊 Datasets
 
-### Streamlit Cloud
+### Dataset Principal
+- **Archivo**: `data/clean_data.csv`
+- **Registros**: 2,939 países-año
+- **Características**: 18 variables socioeconómicas y de salud
+- **Período**: 2000-2015
+- **Países**: 193 países
 
-1. Configurar secrets en Streamlit Cloud:
-```toml
-[db]
-host = "your-db-host"
-port = 5432
-name = "healthdb"
-user = "your-user"
-password = "your-password"
-```
-
-2. Conectar repositorio GitHub
-3. Configurar archivo principal: `app.py`
-
-### Base de Datos (Render/Railway)
-
-Ver `docs/DEPLOYMENT.md` para instrucciones detalladas.
-
-## 🧪 Testing
-
-```bash
-# Ejecutar todos los tests
-python tests/run_all_tests.py
-
-# Tests específicos
-python -m pytest tests/test_model.py
-python -m pytest tests/test_pipeline.py
-```
-
-## 📊 Características MLOps
-
-- **Monitoreo de Deriva de Datos**: Detección automática de cambios en distribución
-- **Reemplazo Automático de Modelos**: Actualización automática cuando se detecta degradación
-- **Pruebas A/B**: Comparación de modelos en producción
-- **Monitoreo de Rendimiento**: Seguimiento continuo de métricas
-- **Feedback Loop**: Sistema de retroalimentación de usuarios
+### Variables Principales
+- **Salud**: Mortalidad adulta, muertes infantiles, vacunaciones
+- **Económicas**: PIB per cápita, gasto en salud, composición de ingresos
+- **Sociales**: Escolaridad, IMC, consumo de alcohol
+- **Demográficas**: Población, estado de desarrollo
 
 ## 🔧 Configuración
 
 ### Variables de Entorno
-
 ```bash
-# Base de datos
+# Base de datos (opcional)
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=healthdb
@@ -164,36 +211,78 @@ DB_USER=admin
 DB_PASSWORD=admin
 ```
 
-### Streamlit Secrets
+### Configuración de Streamlit Cloud
+Crear archivo `.streamlit/secrets.toml`:
+```toml
+[db]
+host = "your-db-host"
+port = 5432
+name = "your-db-name"
+user = "your-username"
+password = "your-password"
+```
 
-Ver `config/.streamlit/secrets.toml.example` para configuración de secrets.
+## 🧪 Testing
 
-## 📈 Uso
+### Ejecutar Tests
+```bash
+# Todos los tests
+python -m pytest tests/
 
-1. **Dashboard Principal**: Visualización general del sistema
-2. **Análisis de Datos**: Exploración interactiva de datos
-3. **Monitoreo de Deriva**: Análisis de cambios en datos
-4. **Reemplazo de Modelos**: Gestión automática de modelos
-5. **Pruebas A/B**: Comparación de modelos
-6. **Rendimiento**: Monitoreo de métricas
+# Test específico
+python -m pytest tests/test_pipeline.py
+
+# Con cobertura
+python -m pytest --cov=ml tests/
+```
+
+### Tests Incluidos
+- **Test de pipeline**: Validación del modelo ML
+- **Test de datos**: Validación de preprocesamiento
+- **Test de métricas**: Validación de rendimiento mínimo
+- **Test de integración**: Validación end-to-end
+
+## 📈 Monitoreo y Mantenimiento
+
+### Dashboard de Monitoreo
+- **Estado del modelo**: Rendimiento en tiempo real
+- **Data Drift**: Alertas de cambios en datos
+- **A/B Testing**: Comparación de modelos
+- **Feedback**: Calidad de datos de usuario
+
+### Mantenimiento Automático
+- **Reentrenamiento**: Cuando el rendimiento cae
+- **Actualización de datos**: Ingestión automática
+- **Backup**: Respaldo automático de modelos
+- **Alertas**: Notificaciones de problemas
 
 ## 🤝 Contribución
 
-1. Fork el proyecto
-2. Crear rama feature (`git checkout -b feature/nueva-caracteristica`)
-3. Commit cambios (`git commit -m 'Agregar nueva característica'`)
-4. Push a la rama (`git push origin feature/nueva-caracteristica`)
-5. Abrir Pull Request
+### Estructura del Código
+- **Modular**: Cada funcionalidad en su módulo
+- **Documentado**: Docstrings en todas las funciones
+- **Testeable**: Cobertura de tests > 80%
+- **Mantenible**: Código limpio y organizado
 
-## 📝 Licencia
+### Flujo de Trabajo
+1. Fork del repositorio
+2. Crear rama feature
+3. Implementar cambios
+4. Ejecutar tests
+5. Crear pull request
 
-Este proyecto está bajo la Licencia MIT. Ver `LICENSE` para más detalles.
+
 
 ## 👥 Equipo
 
-- **Equipo 5** - Bootcamp IA
-- **Proyecto 5** - MLOps Dashboard
+- **Desarrollo**: Maribel Gutierrez, Mónica Gómez y Bárbara Sánchez
+- **Mentoría**: Factoria F5 Madrid
 
-## 📞 Soporte
 
-Para soporte técnico o preguntas, contactar al equipo de desarrollo.
+## 📞 Contacto
+
+Para preguntas o sugerencias sobre el proyecto, contactar al equipo de desarrollo.
+
+---
+
+**Nota**: Este proyecto implementa un sistema MLOps completo siguiendo las mejores prácticas de la industria, desde el análisis exploratorio hasta el despliegue en producción con monitoreo continuo.
