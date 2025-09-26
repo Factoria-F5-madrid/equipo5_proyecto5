@@ -237,37 +237,37 @@ def show_predictor_page():
             status = st.selectbox("🏛️ Estado de Desarrollo", ["Developed", "Developing"], help="Estado de desarrollo del país")
             
             # Parámetros de salud
-            adult_mortality = st.slider("💀 Mortalidad Adulta (por 1000)", min_value=0.0, max_value=1000.0, value=50.0, step=1.0, help="Mortalidad de adultos entre 15-60 años")
-            infant_deaths = st.slider("👶 Muertes Infantiles", min_value=0, max_value=10000, value=5, step=1, help="Número de muertes infantiles")
-            under_five_deaths = st.slider("👶👶 Muertes <5 años", min_value=0, max_value=10000, value=8, step=1, help="Número de muertes de niños menores de 5 años")
+            adult_mortality = st.slider("💀 Mortalidad Adulta (por 1000 habitantes)", min_value=0.0, max_value=1000.0, value=50.0, step=1.0, help="Mortalidad de adultos entre 15-60 años")
+            infant_deaths = st.slider("👶 Muertes Infantiles (número absoluto)", min_value=0, max_value=10000, value=5, step=1, help="Número de muertes infantiles")
+            under_five_deaths = st.slider("👶👶 Muertes <5 años (número absoluto)", min_value=0, max_value=10000, value=8, step=1, help="Número de muertes de niños menores de 5 años")
             
             # Parámetros de salud específicos
-            hepatitis_b = st.slider("🦠 Hepatitis B (%)", min_value=0.0, max_value=100.0, value=85.0, step=0.1, help="Porcentaje de vacunación contra Hepatitis B")
-            measles = st.slider("🌡️ Sarampión (por 1000)", min_value=0, max_value=10000, value=50, step=1, help="Número de casos de sarampión por 1000 habitantes")
-            polio = st.slider("🦵 Polio (%)", min_value=0.0, max_value=100.0, value=90.0, step=0.1, help="Porcentaje de vacunación contra polio")
-            diphtheria = st.slider("🦠 Difteria (%)", min_value=0.0, max_value=100.0, value=88.0, step=0.1, help="Porcentaje de vacunación contra difteria")
-            hiv_aids = st.slider("🩸 VIH/SIDA (%)", min_value=0.0, max_value=50.0, value=0.1, step=0.01, help="Porcentaje de población con VIH/SIDA")
+            hepatitis_b = st.slider("🦠 Hepatitis B (% de vacunación)", min_value=0.0, max_value=100.0, value=85.0, step=0.1, help="Porcentaje de vacunación contra Hepatitis B")
+            measles = st.slider("🌡️ Sarampión (por 1000 habitantes)", min_value=0, max_value=10000, value=50, step=1, help="Número de casos de sarampión por 1000 habitantes")
+            polio = st.slider("🦵 Polio (% de vacunación)", min_value=0.0, max_value=100.0, value=90.0, step=0.1, help="Porcentaje de vacunación contra polio")
+            diphtheria = st.slider("🦠 Difteria (% de vacunación)", min_value=0.0, max_value=100.0, value=88.0, step=0.1, help="Porcentaje de vacunación contra difteria")
+            hiv_aids = st.slider("🩸 VIH/SIDA (% de población)", min_value=0.0, max_value=50.0, value=0.1, step=0.01, help="Porcentaje de población con VIH/SIDA")
         
         with col2:
             # Parámetros económicos
-            gdp = st.slider("💰 PIB per cápita", min_value=0.0, max_value=100000.0, value=30000.0, step=100.0, help="PIB per cápita en USD")
-            population = st.slider("👥 Población", min_value=0.0, max_value=2000000000.0, value=47000000.0, step=100000.0, help="Población total del país")
-            income_composition = st.slider("📈 Composición de Ingresos", min_value=0.0, max_value=1.0, value=0.8, step=0.01, help="Índice de composición de recursos de ingresos")
+            gdp = st.slider("💰 PIB per cápita (USD)", min_value=0.0, max_value=100000.0, value=30000.0, step=100.0, help="PIB per cápita en USD")
+            population = st.slider("👥 Población (número absoluto)", min_value=0.0, max_value=2000000000.0, value=47000000.0, step=100000.0, help="Población total del país")
+            income_composition = st.slider("📈 Composición de Ingresos (índice 0-1)", min_value=0.0, max_value=1.0, value=0.8, step=0.01, help="Índice de composición de recursos de ingresos")
             
             # Parámetros de gasto
-            percentage_expenditure = st.slider("💸 % Gasto en Salud", min_value=0.0, max_value=50.0, value=8.0, step=0.1, help="Porcentaje del PIB gastado en salud")
-            total_expenditure = st.slider("🏥 Gasto Total en Salud", min_value=0.0, max_value=50.0, value=7.5, step=0.1, help="Porcentaje del gasto total en salud")
+            percentage_expenditure = st.slider("💸 % Gasto en Salud (% del PIB)", min_value=0.0, max_value=50.0, value=8.0, step=0.1, help="Porcentaje del PIB gastado en salud")
+            total_expenditure = st.slider("🏥 Gasto Total en Salud (% del gasto total)", min_value=0.0, max_value=50.0, value=7.5, step=0.1, help="Porcentaje del gasto total en salud")
             
             # Parámetros de estilo de vida
-            alcohol = st.slider("🍷 Consumo de Alcohol", min_value=0.0, max_value=20.0, value=8.0, step=0.1, help="Consumo de alcohol per cápita en litros")
-            bmi = st.slider("⚖️ IMC Promedio", min_value=10.0, max_value=50.0, value=25.0, step=0.1, help="Índice de masa corporal promedio")
+            alcohol = st.slider("🍷 Consumo de Alcohol (litros per cápita)", min_value=0.0, max_value=20.0, value=8.0, step=0.1, help="Consumo de alcohol per cápita en litros")
+            bmi = st.slider("⚖️ IMC Promedio (kg/m²)", min_value=10.0, max_value=50.0, value=25.0, step=0.1, help="Índice de masa corporal promedio")
             
             # Parámetros de nutrición
-            thinness_1_19 = st.slider("👶 Delgadez 1-19 años (%)", min_value=0.0, max_value=50.0, value=2.0, step=0.1, help="Prevalencia de delgadez en niños 1-19 años")
-            thinness_5_9 = st.slider("👶 Delgadez 5-9 años (%)", min_value=0.0, max_value=50.0, value=1.5, step=0.1, help="Prevalencia de delgadez en niños 5-9 años")
+            thinness_1_19 = st.slider("👶 Delgadez 1-19 años (% de prevalencia)", min_value=0.0, max_value=50.0, value=2.0, step=0.1, help="Prevalencia de delgadez en niños 1-19 años")
+            thinness_5_9 = st.slider("👶 Delgadez 5-9 años (% de prevalencia)", min_value=0.0, max_value=50.0, value=1.5, step=0.1, help="Prevalencia de delgadez en niños 5-9 años")
             
             # Educación
-            schooling = st.slider("🎓 Años de Escolaridad", min_value=0.0, max_value=20.0, value=12.0, step=0.1, help="Años promedio de escolaridad")
+            schooling = st.slider("🎓 Años de Escolaridad (años promedio)", min_value=0.0, max_value=20.0, value=12.0, step=0.1, help="Años promedio de escolaridad")
         
         # Botón de predicción
         submitted = st.form_submit_button("🔮 Predecir Esperanza de Vida", type="primary")
