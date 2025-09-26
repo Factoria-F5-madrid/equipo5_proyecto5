@@ -2,8 +2,6 @@ from db_connect import get_connection, get_cursor
 import json
 import logging
 from datetime import datetime
-
-# Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -12,7 +10,7 @@ def create_experiment(name, description, traffic_split, model_a_id, model_b_id, 
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            INSERT INTO experiments 
+            INSERT INTO experiments
             (name, description, traffic_split, model_a_id, model_b_id, created_by, created_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             RETURNING experiment_id;
@@ -32,7 +30,7 @@ def log_experiment_result(experiment_id, model_id, feedback_id, success, latency
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            INSERT INTO experiment_results 
+            INSERT INTO experiment_results
             (experiment_id, model_id, feedback_id, success, latency_ms, created_at)
             VALUES (%s, %s, %s, %s, %s, %s);
         """, (experiment_id, model_id, feedback_id, success, latency_ms, datetime.now()))
@@ -63,8 +61,8 @@ def get_active_experiments():
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            SELECT * FROM experiments 
-            WHERE status = 'running' 
+            SELECT * FROM experiments
+            WHERE status = 'running'
             ORDER BY created_at DESC
         """)
         experiments = cur.fetchall()
@@ -80,8 +78,8 @@ def update_experiment_status(experiment_id, status):
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            UPDATE experiments 
-            SET status = %s, updated_at = %s 
+            UPDATE experiments
+            SET status = %s, updated_at = %s
             WHERE experiment_id = %s
         """, (status, datetime.now(), experiment_id))
         conn.commit()
@@ -98,8 +96,8 @@ def get_experiment_results(experiment_id):
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            SELECT * FROM experiment_results 
-            WHERE experiment_id = %s 
+            SELECT * FROM experiment_results
+            WHERE experiment_id = %s
             ORDER BY created_at DESC
         """, (experiment_id,))
         results = cur.fetchall()
@@ -115,7 +113,7 @@ def get_experiment_summary(experiment_id):
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            SELECT 
+            SELECT
                 e.name,
                 e.traffic_split,
                 e.status,

@@ -1,8 +1,3 @@
-"""
-Data Drift Monitoring System for Life Expectancy ML Pipeline
-Detects changes in data distribution over time and provides Streamlit integration
-"""
-
 import pandas as pd
 import numpy as np
 import json
@@ -31,18 +26,18 @@ class DataDriftMonitor:
         self.reference_data_path = reference_data_path
         self.reference_data = None
         self.reference_stats = {}
-        self.drift_threshold = 0.1  # 10% threshold for drift detection
+        self.drift_threshold = 0.1 
         self.monitoring_history = []
         self.alert_history = []
         
-        # Load reference data
+      
         self._load_reference_data()
     
     def _load_reference_data(self):
         """Load and prepare reference data"""
         self.reference_data = pd.read_csv(self.reference_data_path)
         
-        # Prepare features (same as in pipeline)
+    
         target = 'life_expectancy'
         exclude_cols = ['country', 'year', 'status', target]
         feature_cols = [col for col in self.reference_data.columns if col not in exclude_cols]
@@ -50,12 +45,12 @@ class DataDriftMonitor:
         self.reference_features = self.reference_data[feature_cols]
         self.reference_target = self.reference_data[target]
         
-        # Calculate reference statistics
+      
         self._calculate_reference_stats()
     
     def _calculate_reference_stats(self):
         """Calculate reference statistics for drift detection"""
-        # Numerical features statistics
+      
         numerical_features = self.reference_features.select_dtypes(include=[np.number]).columns
         
         for feature in numerical_features:
@@ -73,7 +68,7 @@ class DataDriftMonitor:
                 'kurtosis': values.kurtosis()
             }
         
-        # Target variable statistics
+      
         target_values = self.reference_target.dropna()
         self.reference_stats['target'] = {
             'mean': target_values.mean(),
@@ -99,7 +94,7 @@ class DataDriftMonitor:
             exclude_cols = ['country', 'year', 'status', target]
             feature_cols = [col for col in new_data.columns if col not in exclude_cols]
         
-        # Prepare new data
+       
         new_features = new_data[feature_cols]
         drift_results = {
             'timestamp': datetime.now().isoformat(),
@@ -111,7 +106,7 @@ class DataDriftMonitor:
             'alert_level': 'green'
         }
         
-        # Check each feature for drift
+      
         for feature in feature_cols:
             if feature not in self.reference_stats:
                 continue
@@ -122,7 +117,7 @@ class DataDriftMonitor:
             if drift_info['drift_detected']:
                 drift_results['features_with_drift'] += 1
         
-        # Determine overall drift
+      
         drift_ratio = drift_results['features_with_drift'] / drift_results['total_features_checked']
         drift_results['drift_ratio'] = drift_ratio
         
@@ -138,10 +133,10 @@ class DataDriftMonitor:
                 drift_results['drift_severity'] = 'low'
                 drift_results['alert_level'] = 'yellow'
         
-        # Store in monitoring history
+    
         self.monitoring_history.append(drift_results)
         
-        # Create alert if drift detected
+   
         if drift_results['overall_drift_detected']:
             self._create_alert(drift_results)
         
@@ -165,7 +160,7 @@ class DataDriftMonitor:
             'details': {}
         }
         
-        # Test 1: Kolmogorov-Smirnov test
+       
         try:
             ks_statistic, ks_p_value = stats.ks_2samp(
                 self.reference_features[feature].dropna(),
@@ -175,41 +170,41 @@ class DataDriftMonitor:
             drift_info['details']['ks_statistic'] = ks_statistic
             drift_info['details']['ks_p_value'] = ks_p_value
             
-            if ks_p_value < 0.05:  # Significant difference
+            if ks_p_value < 0.05:  
                 drift_info['drift_score'] += 0.4
         except Exception as e:
             drift_info['details']['ks_error'] = str(e)
         
-        # Test 2: Mean shift test
+       
         try:
             new_mean = new_values_clean.mean()
             ref_mean = ref_stats['mean']
             ref_std = ref_stats['std']
             
-            # Z-score for mean difference
+           
             z_score = abs(new_mean - ref_mean) / ref_std
             drift_info['details']['mean_z_score'] = z_score
             
-            if z_score > 2:  # More than 2 standard deviations
+            if z_score > 2:
                 drift_info['drift_score'] += 0.3
         except Exception as e:
             drift_info['details']['mean_test_error'] = str(e)
         
-        # Test 3: Variance test
+      
         try:
             new_std = new_values_clean.std()
             ref_std = ref_stats['std']
             
-            # F-test for variance
+           
             f_statistic = (new_std / ref_std) ** 2
             drift_info['details']['f_statistic'] = f_statistic
             
-            if f_statistic > 1.5 or f_statistic < 0.67:  # Significant variance change
+            if f_statistic > 1.5 or f_statistic < 0.67:  
                 drift_info['drift_score'] += 0.3
         except Exception as e:
             drift_info['details']['variance_test_error'] = str(e)
         
-        # Determine if drift is detected
+     
         drift_info['drift_detected'] = drift_info['drift_score'] > 0.5
         
         return drift_info
@@ -258,7 +253,7 @@ class DataDriftMonitor:
         if not self.monitoring_history:
             return None
         
-        # Create drift trend chart
+      
         timestamps = [entry['timestamp'] for entry in self.monitoring_history]
         drift_ratios = [entry['drift_ratio'] for entry in self.monitoring_history]
         
@@ -271,7 +266,7 @@ class DataDriftMonitor:
         ax.legend()
         ax.grid(True, alpha=0.3)
         
-        # Rotate x-axis labels
+      
         plt.xticks(rotation=45)
         
         plt.tight_layout()
@@ -295,16 +290,16 @@ def create_streamlit_drift_dashboard():
     """Create Streamlit dashboard for data drift monitoring"""
     st.title("🔍 Data Drift Monitoring Dashboard")
     
-    # Initialize monitor
+
     if 'drift_monitor' not in st.session_state:
         st.session_state.drift_monitor = DataDriftMonitor()
     
     monitor = st.session_state.drift_monitor
     
-    # Get dashboard data
+   
     dashboard_data = monitor.get_streamlit_dashboard_data()
     
-    # Status overview
+   
     col1, col2, col3, col4 = st.columns(4)
     
     with col1:
@@ -326,7 +321,7 @@ def create_streamlit_drift_dashboard():
         }.get(dashboard_data['alert_level'], '⚪')
         st.metric("Alert Level", f"{alert_color} {dashboard_data['alert_level'].title()}")
     
-    # Drift metrics
+   
     st.subheader("📊 Drift Metrics")
     col1, col2, col3 = st.columns(3)
     
@@ -339,7 +334,7 @@ def create_streamlit_drift_dashboard():
     with col3:
         st.metric("Drift Ratio", f"{dashboard_data['drift_ratio']:.2%}")
     
-    # Visualizations
+   
     st.subheader("📈 Drift Trends")
     if monitor.monitoring_history:
         fig = monitor.create_streamlit_visualizations()
@@ -348,7 +343,7 @@ def create_streamlit_drift_dashboard():
     else:
         st.info("No monitoring data available yet. Upload some data to start monitoring.")
     
-    # Recent alerts
+    
     if dashboard_data['recent_alerts']:
         st.subheader("🚨 Recent Alerts")
         for alert in dashboard_data['recent_alerts']:
@@ -357,7 +352,7 @@ def create_streamlit_drift_dashboard():
                 st.write(f"**Message:** {alert['message']}")
                 st.write(f"**Severity:** {alert['severity']}")
     
-    # Data upload for testing
+ 
     st.subheader("📤 Test Data Drift Detection")
     uploaded_file = st.file_uploader("Upload new data to test for drift", type=['csv'])
     
@@ -368,7 +363,7 @@ def create_streamlit_drift_dashboard():
             
             st.success("Data drift analysis completed!")
             
-            # Show results
+            
             if drift_results['overall_drift_detected']:
                 st.error(f"🚨 Data drift detected! {drift_results['features_with_drift']} features affected.")
                 st.write(f"**Drift Severity:** {drift_results['drift_severity']}")
@@ -376,7 +371,7 @@ def create_streamlit_drift_dashboard():
             else:
                 st.success("✅ No significant data drift detected.")
             
-            # Show detailed results
+          
             with st.expander("Detailed Drift Analysis"):
                 for feature, details in drift_results['drift_details'].items():
                     if details['drift_detected']:
@@ -387,28 +382,23 @@ def create_streamlit_drift_dashboard():
 
 
 if __name__ == "__main__":
-    # Test the drift monitor
-    print("🔍 Testing Data Drift Monitor...")
+  
     
     monitor = DataDriftMonitor()
-    
-    # Simulate new data with some drift
+
     reference_data = pd.read_csv('data/clean_data.csv')
     new_data = reference_data.copy()
     
-    # Add some drift
+  
     np.random.seed(42)
     new_data['gdp'] = new_data['gdp'] * (1 + np.random.normal(0, 0.1, len(new_data)))
     new_data['adult_mortality'] = new_data['adult_mortality'] * (1 + np.random.normal(0, 0.05, len(new_data)))
     
-    # Detect drift
+   
     drift_results = monitor.detect_drift(new_data)
     
-    print(f"Drift detected: {drift_results['overall_drift_detected']}")
-    print(f"Features with drift: {drift_results['features_with_drift']}")
-    print(f"Drift ratio: {drift_results['drift_ratio']:.2%}")
     
-    # Save monitoring data
+   
     monitor.save_monitoring_data()
     
-    print("✅ Data drift monitoring test completed!")
+  

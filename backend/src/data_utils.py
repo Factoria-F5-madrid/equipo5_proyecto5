@@ -1,8 +1,6 @@
 import pandas as pd
 from db_connect import engine, get_connection
 import logging
-
-# Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

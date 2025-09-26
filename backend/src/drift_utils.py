@@ -2,22 +2,20 @@ from db_connect import get_connection, get_cursor
 import json
 import logging
 from datetime import datetime
-
-# Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def log_drift(column_name, reference_stats, current_stats, drift_metric, 
+def log_drift(column_name, reference_stats, current_stats, drift_metric,
               drift_detected=False, alert_level='green'):
     """Registrar drift de datos"""
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            INSERT INTO data_drift 
-            (column_name, reference_stats, current_stats, drift_metric, 
+            INSERT INTO data_drift
+            (column_name, reference_stats, current_stats, drift_metric,
              drift_detected, alert_level, checked_at)
             VALUES (%s, %s, %s, %s, %s, %s, %s);
-        """, (column_name, json.dumps(reference_stats), json.dumps(current_stats), 
+        """, (column_name, json.dumps(reference_stats), json.dumps(current_stats),
               drift_metric, drift_detected, alert_level, datetime.now()))
         conn.commit()
         cur.close()
@@ -50,7 +48,7 @@ def get_drift_summary(days=7):
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            SELECT 
+            SELECT
                 column_name,
                 COUNT(*) as total_checks,
                 SUM(CASE WHEN drift_detected THEN 1 ELSE 0 END) as drift_incidents,
@@ -74,7 +72,7 @@ def create_drift_alert(alert_type, severity, message, affected_features):
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            INSERT INTO drift_alerts 
+            INSERT INTO drift_alerts
             (alert_type, severity, message, affected_features, created_at)
             VALUES (%s, %s, %s, %s, %s)
         """, (alert_type, severity, message, json.dumps(affected_features), datetime.now()))
@@ -92,8 +90,8 @@ def get_active_alerts():
     try:
         conn, cur = get_cursor()
         cur.execute("""
-            SELECT * FROM drift_alerts 
-            WHERE status = 'open' 
+            SELECT * FROM drift_alerts
+            WHERE status = 'open'
             ORDER BY created_at DESC
         """)
         alerts = cur.fetchall()

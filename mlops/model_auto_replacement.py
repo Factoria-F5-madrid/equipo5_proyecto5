@@ -1,8 +1,3 @@
-"""
-Auto Model Replacement System for Life Expectancy ML Pipeline
-Automatically replaces models in production when better ones are found
-"""
-
 import pandas as pd
 import numpy as np
 import json
@@ -25,7 +20,7 @@ class ModelAutoReplacement:
     def __init__(self, 
                  current_model_path: str = 'models/best_life_expectancy_model.pkl',
                  backup_dir: str = 'models/backups',
-                 performance_threshold: float = 0.05):  # 5% improvement threshold
+                 performance_threshold: float = 0.05):  
         """
         Initialize Auto Model Replacement system
         
@@ -40,10 +35,10 @@ class ModelAutoReplacement:
         self.replacement_history = []
         self.model_registry = {}
         
-        # Create backup directory
+    
         os.makedirs(backup_dir, exist_ok=True)
         
-        # Load current model info
+    
         self._load_current_model_info()
     
     def _load_current_model_info(self):
@@ -61,17 +56,16 @@ class ModelAutoReplacement:
                 self.current_model = None
                 self.current_model_info = None
         except Exception as e:
-            print(f"Error loading current model: {e}")
             self.current_model = None
             self.current_model_info = None
     
     def _evaluate_model_performance(self, model, test_data: pd.DataFrame = None) -> Dict:
         """Evaluate model performance"""
         if test_data is None:
-            # Use a small sample for evaluation
+           
             test_data = pd.read_csv('data/clean_data.csv').head(100)
         
-        # Prepare test data
+      
         target = 'life_expectancy'
         exclude_cols = ['country', 'year', 'status', target]
         feature_cols = [col for col in test_data.columns if col not in exclude_cols]
@@ -89,7 +83,6 @@ class ModelAutoReplacement:
                 'evaluated_at': datetime.now().isoformat()
             }
         except Exception as e:
-            print(f"Error evaluating model: {e}")
             return {
                 'rmse': float('inf'),
                 'mae': float('inf'),
@@ -111,12 +104,11 @@ class ModelAutoReplacement:
         Returns:
             Dict with registration results
         """
-        print(f"📝 Registering new model: {model_name} ({model_type})")
         
-        # Evaluate model performance
+       
         performance = self._evaluate_model_performance(model, training_data)
         
-        # Register model
+       
         model_id = f"{model_type}_{model_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         
         self.model_registry[model_id] = {
@@ -127,9 +119,7 @@ class ModelAutoReplacement:
             'registered_at': datetime.now().isoformat(),
             'status': 'candidate'
         }
-        
-        print(f"✅ Model registered with ID: {model_id}")
-        print(f"   Performance: RMSE={performance['rmse']:.4f}, R²={performance['r2']:.4f}")
+       
         
         return {
             'model_id': model_id,
@@ -157,7 +147,7 @@ class ModelAutoReplacement:
         candidate_model = self.model_registry[candidate_model_id]
         candidate_performance = candidate_model['performance']
         
-        # Check if current model exists
+     
         if self.current_model_info is None:
             return {
                 'should_replace': True,
@@ -167,11 +157,11 @@ class ModelAutoReplacement:
         
         current_performance = self.current_model_info['performance']
         
-        # Calculate improvement
+       
         rmse_improvement = (current_performance['rmse'] - candidate_performance['rmse']) / current_performance['rmse']
         r2_improvement = candidate_performance['r2'] - current_performance['r2']
         
-        # Check if improvement meets threshold
+       
         should_replace = rmse_improvement >= self.performance_threshold
         
         decision = {
@@ -184,13 +174,9 @@ class ModelAutoReplacement:
         }
         
         if should_replace:
-            print(f"🔄 Model replacement recommended!")
-            print(f"   Improvement: {rmse_improvement:.2%}")
-            print(f"   Current RMSE: {current_performance['rmse']:.4f}")
-            print(f"   Candidate RMSE: {candidate_performance['rmse']:.4f}")
+            pass
         else:
-            print(f"❌ Model replacement not recommended")
-            print(f"   Improvement: {rmse_improvement:.2%} (threshold: {self.performance_threshold:.2%})")
+            pass
         
         return decision
     
@@ -214,19 +200,19 @@ class ModelAutoReplacement:
         candidate_model = self.model_registry[candidate_model_id]
         
         try:
-            # Backup current model if it exists
+          
             if backup_current and self.current_model_info is not None:
                 backup_path = os.path.join(
                     self.backup_dir, 
                     f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pkl"
                 )
                 shutil.copy2(self.current_model_path, backup_path)
-                print(f"📦 Current model backed up to: {backup_path}")
+               
             
-            # Save new model
+         
             joblib.dump(candidate_model['model'], self.current_model_path)
             
-            # Update current model info
+          
             self.current_model = candidate_model['model']
             self.current_model_info = {
                 'path': self.current_model_path,
@@ -236,10 +222,10 @@ class ModelAutoReplacement:
                 'replaced_from': candidate_model_id
             }
             
-            # Update model registry
+           
             self.model_registry[candidate_model_id]['status'] = 'production'
             
-            # Record replacement
+        
             replacement_record = {
                 'timestamp': datetime.now().isoformat(),
                 'old_model': self.current_model_info.get('type', 'Unknown'),
@@ -250,11 +236,7 @@ class ModelAutoReplacement:
             }
             
             self.replacement_history.append(replacement_record)
-            
-            print(f"✅ Model successfully replaced!")
-            print(f"   New model: {candidate_model['type']}")
-            print(f"   Performance: RMSE={candidate_model['performance']['rmse']:.4f}")
-            
+      
             return {
                 'success': True,
                 'new_model_type': candidate_model['type'],
@@ -263,7 +245,7 @@ class ModelAutoReplacement:
             }
             
         except Exception as e:
-            print(f"❌ Error replacing model: {e}")
+           
             return {
                 'success': False,
                 'error': str(e)
@@ -279,13 +261,11 @@ class ModelAutoReplacement:
         Returns:
             Dict with auto-replacement results
         """
-        print(f"🤖 Auto-replacement check for model: {candidate_model_id}")
         
-        # Check if replacement is recommended
         decision = self.check_for_replacement(candidate_model_id)
         
         if decision['should_replace']:
-            print(f"🔄 Auto-replacing model...")
+          
             replacement_result = self.replace_model(candidate_model_id)
             
             return {
@@ -294,7 +274,7 @@ class ModelAutoReplacement:
                 'replacement_result': replacement_result
             }
         else:
-            print(f"❌ Auto-replacement skipped - improvement insufficient")
+           
             return {
                 'auto_replaced': False,
                 'decision': decision,
@@ -307,7 +287,7 @@ class ModelAutoReplacement:
             'current_model': self.current_model_info,
             'candidate_models': len([m for m in self.model_registry.values() if m['status'] == 'candidate']),
             'production_models': len([m for m in self.model_registry.values() if m['status'] == 'production']),
-            'replacement_history': self.replacement_history[-10:],  # Last 10 replacements
+            'replacement_history': self.replacement_history[-10:], 
             'performance_threshold': self.performance_threshold,
             'total_models_registered': len(self.model_registry)
         }
@@ -317,7 +297,7 @@ class ModelAutoReplacement:
         if not self.replacement_history:
             return None
         
-        # Create replacement history chart
+      
         timestamps = [entry['timestamp'] for entry in self.replacement_history]
         improvements = [entry['improvement'] for entry in self.replacement_history]
         
@@ -330,7 +310,7 @@ class ModelAutoReplacement:
         ax.legend()
         ax.grid(True, alpha=0.3)
         
-        # Rotate x-axis labels
+       
         plt.xticks(rotation=45)
         
         plt.tight_layout()
@@ -340,7 +320,7 @@ class ModelAutoReplacement:
         """Save replacement data to file"""
         replacement_data = {
             'current_model_info': self.current_model_info,
-            'model_registry': {k: {**v, 'model': None} for k, v in self.model_registry.items()},  # Exclude model objects
+            'model_registry': {k: {**v, 'model': None} for k, v in self.model_registry.items()},  
             'replacement_history': self.replacement_history,
             'performance_threshold': self.performance_threshold,
             'last_updated': datetime.now().isoformat()
@@ -354,16 +334,16 @@ def create_streamlit_auto_replacement_dashboard():
     """Create Streamlit dashboard for auto model replacement"""
     st.title("🔄 Auto Model Replacement Dashboard")
     
-    # Initialize auto replacement system
+
     if 'auto_replacement' not in st.session_state:
         st.session_state.auto_replacement = ModelAutoReplacement()
     
     auto_replacement = st.session_state.auto_replacement
     
-    # Get dashboard data
+   
     dashboard_data = auto_replacement.get_streamlit_dashboard_data()
     
-    # Current model status
+
     st.subheader("📊 Current Model Status")
     
     if dashboard_data['current_model']:
@@ -383,7 +363,7 @@ def create_streamlit_auto_replacement_dashboard():
     else:
         st.warning("No model currently in production")
     
-    # Model registry
+    
     st.subheader("📝 Model Registry")
     col1, col2, col3 = st.columns(3)
     
@@ -396,11 +376,11 @@ def create_streamlit_auto_replacement_dashboard():
     with col3:
         st.metric("Total Registered", dashboard_data['total_models_registered'])
     
-    # Replacement history
+   
     if dashboard_data['replacement_history']:
         st.subheader("📈 Replacement History")
         
-        # Show recent replacements
+       
         for replacement in dashboard_data['replacement_history'][-5:]:
             with st.expander(f"Replacement - {replacement['timestamp'][:19]}"):
                 st.write(f"**From:** {replacement['old_model']}")
@@ -408,15 +388,15 @@ def create_streamlit_auto_replacement_dashboard():
                 st.write(f"**Improvement:** {replacement['improvement']:.2%}")
                 st.write(f"**Backup Created:** {replacement['backup_created']}")
         
-        # Show visualization
+    
         fig = auto_replacement.create_streamlit_visualizations()
         if fig:
             st.pyplot(fig)
     
-    # Manual model replacement
+   
     st.subheader("🔄 Manual Model Replacement")
     
-    # Show candidate models
+   
     candidate_models = {k: v for k, v in auto_replacement.model_registry.items() if v['status'] == 'candidate'}
     
     if candidate_models:
@@ -430,7 +410,7 @@ def create_streamlit_auto_replacement_dashboard():
                 st.write(f"- R²: {model_info['performance']['r2']:.4f}")
                 st.write(f"**Registered:** {model_info['registered_at'][:19]}")
                 
-                # Check if should replace
+               
                 decision = auto_replacement.check_for_replacement(model_id)
                 
                 if decision['should_replace']:
@@ -448,7 +428,7 @@ def create_streamlit_auto_replacement_dashboard():
     else:
         st.info("No candidate models available")
     
-    # Auto-replacement settings
+ 
     st.subheader("⚙️ Auto-Replacement Settings")
     
     new_threshold = st.slider(
@@ -464,10 +444,10 @@ def create_streamlit_auto_replacement_dashboard():
         auto_replacement.performance_threshold = new_threshold
         st.success(f"Threshold updated to {new_threshold:.1%}")
     
-    # Test auto-replacement
+  
     if st.button("Test Auto-Replacement"):
         if candidate_models:
-            # Test with first candidate
+           
             first_candidate = list(candidate_models.keys())[0]
             result = auto_replacement.auto_replace_if_better(first_candidate)
             
@@ -480,16 +460,14 @@ def create_streamlit_auto_replacement_dashboard():
 
 
 if __name__ == "__main__":
-    # Test the auto replacement system
-    print("🔄 Testing Auto Model Replacement System...")
+   
     
     auto_replacement = ModelAutoReplacement()
     
-    # Create a test model
     from sklearn.ensemble import GradientBoostingRegressor
     test_model = GradientBoostingRegressor(n_estimators=100, random_state=42)
     
-    # Load some data for training
+   
     data = pd.read_csv('data/clean_data.csv')
     target = 'life_expectancy'
     exclude_cols = ['country', 'year', 'status', target]
@@ -498,24 +476,18 @@ if __name__ == "__main__":
     X = data[feature_cols].fillna(data[feature_cols].median())
     y = data[target]
     
-    # Train test model
+  
     test_model.fit(X, y)
     
-    # Register the model
+    
     registration_result = auto_replacement.register_new_model(
         test_model, 
         "TestGradientBoosting", 
         "GradientBoosting",
         data
     )
-    
-    print(f"Registration result: {registration_result}")
-    
-    # Test auto-replacement
+  
     auto_result = auto_replacement.auto_replace_if_better(registration_result['model_id'])
-    print(f"Auto-replacement result: {auto_result}")
-    
-    # Save data
+ 
     auto_replacement.save_replacement_data()
     
-    print("✅ Auto model replacement test completed!")

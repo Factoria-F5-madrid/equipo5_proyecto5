@@ -2,8 +2,6 @@ from db_connect import get_connection, get_cursor
 import json
 import logging
 from datetime import datetime
-
-# Configurar logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

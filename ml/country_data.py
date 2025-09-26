@@ -1,9 +1,3 @@
-"""
-Datos reales de esperanza de vida por país
-Fuente: World Bank, WHO, y otras organizaciones internacionales (2023-2024)
-"""
-
-# Datos reales de esperanza de vida por país (años)
 REAL_LIFE_EXPECTANCY = {
     'Monaco': 89.0,
     'Japan': 84.0,
@@ -168,12 +162,10 @@ REAL_LIFE_EXPECTANCY = {
     'Jersey': 81.0,
     'Guernsey': 81.0
 }
-
-# Países que están mal clasificados como "Developing" en el dataset
 DEVELOPED_COUNTRIES = [
-    'France', 'Germany', 'Italy', 'Spain', 'United Kingdom', 'Canada', 'Australia', 
+    'France', 'Germany', 'Italy', 'Spain', 'United Kingdom', 'Canada', 'Australia',
     'Japan', 'South Korea', 'Singapore', 'Israel', 'Greece', 'Portugal', 'Slovenia',
-    'Croatia', 'Poland', 'Czech Republic', 'Slovakia', 'Hungary', 'Estonia', 
+    'Croatia', 'Poland', 'Czech Republic', 'Slovakia', 'Hungary', 'Estonia',
     'Latvia', 'Lithuania', 'Malta', 'Cyprus', 'Luxembourg', 'Monaco', 'San Marino',
     'Andorra', 'Liechtenstein', 'Iceland', 'Norway', 'Sweden', 'Denmark', 'Finland',
     'Belgium', 'Austria', 'Netherlands', 'Switzerland', 'Ireland', 'New Zealand',
